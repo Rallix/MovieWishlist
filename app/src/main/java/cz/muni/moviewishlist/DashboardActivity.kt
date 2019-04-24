@@ -2,6 +2,7 @@ package cz.muni.moviewishlist
 
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -12,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import cz.muni.moviewishlist.database.DbHandler
 import cz.muni.moviewishlist.database.ToDo
 import kotlinx.android.synthetic.main.activity_dashboard.*
 
@@ -56,6 +58,7 @@ class DashboardActivity : AppCompatActivity() {
     private fun addItem(name: String) {
         val todo = ToDo()
         todo.name = name
+
         dbHandler.addTodo(todo)
         refreshList()
     }
@@ -83,6 +86,12 @@ class DashboardActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
             viewHolder.todoName.text = list[position].name
+            viewHolder.todoName.setOnClickListener {
+                val intent = Intent(context, ItemActivity::class.java)
+                intent.putExtra(INTENT_TODO_ID, list[position].id)
+                intent.putExtra(INTENT_TODO_NAME, list[position].name)
+                context.startActivity(intent)
+            }
         }
     }
 }

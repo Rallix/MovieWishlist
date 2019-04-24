@@ -1,4 +1,4 @@
-package cz.muni.moviewishlist
+package cz.muni.moviewishlist.database
 
 const val DB_NAME = "MovieList"
 const val DB_VERSION = 1

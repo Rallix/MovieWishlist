@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Movie Wishlist</string>
-    <string name="dashboard_title">Dashboard</string>
+    <string name="dashboard_title">Movies</string>
 
     <string name="add_button">Add</string>
     <string name="cancel_button">Cancel</string>

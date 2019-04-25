@@ -4,5 +4,7 @@
     <EditText
         android:id="@+id/et_todo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:hint="@string/empty_text_hint"
+        android:inputType="text" />
 </RelativeLayout>

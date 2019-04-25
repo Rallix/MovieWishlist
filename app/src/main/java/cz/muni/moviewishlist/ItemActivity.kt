@@ -46,6 +46,7 @@ class ItemActivity : AppCompatActivity() {
             dialog.setView(view)
             dialog.setPositiveButton(R.string.add_button) { _: DialogInterface, _: Int ->
                 if (todoName.text.isNotEmpty()) {
+                    // TODO: Error on empty
                     addItem(todoName.text.toString())
                 }
             }
@@ -66,7 +67,7 @@ class ItemActivity : AppCompatActivity() {
     private fun addItem(name: String) {
         val item = ToDoItem()
         item.toDoId = todoId
-        item.itemName = name
+        item.itemName = name.trim()
         item.watched = false
 
         dbHandler.addTodoItem(item)

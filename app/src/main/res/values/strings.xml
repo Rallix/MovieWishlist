@@ -3,5 +3,17 @@
     <string name="dashboard_title">Movies</string>
 
     <string name="add_button">Add</string>
+    <string name="update_button">Update</string>
     <string name="cancel_button">Cancel</string>
+
+    <string name="empty_text_hint">Enter movie title</string>
+    <string name="empty_text_error">The name cannot be empty.</string>
+
+    <string name="menu_add_title">Add a movie</string>
+    <string name="menu_edit_title">Edit name</string>
+
+    <string name="menu_edit">Edit</string>
+    <string name="menu_delete">Delete</string>
+    <string name="menu_check">Watch</string>
+    <string name="menu_reset">Reset</string>
 </resources>

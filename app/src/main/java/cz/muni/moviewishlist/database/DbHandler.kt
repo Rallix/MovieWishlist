@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 
 class DbHandler(val context: Context) : SQLiteOpenHelper(
     context,
@@ -138,6 +139,11 @@ class DbHandler(val context: Context) : SQLiteOpenHelper(
         // Delete with all its children
         db.delete(TABLE_TODO_ITEM, "$COL_TODO_ID = ?", arrayOf(todoId.toString()))
         db.delete(TABLE_TODO, "$COL_ID = ?", arrayOf(todoId.toString()))
+    }
+
+    fun deleteTodoItem(itemId: Long) {
+        val db = writableDatabase
+        db.delete(TABLE_TODO_ITEM, "$COL_ID = ?", arrayOf(itemId.toString()))
     }
 
     fun watchTodoItem(todoId: Long, watched: Boolean) {

@@ -1,19 +1,28 @@
 <resources>
     <string name="app_name">Movie Wishlist</string>
-    <string name="dashboard_title">Movies</string>
+    <string name="dashboard_title">Movie Categories</string>
+    <string name="splash_icon_description">Icon</string>
 
     <string name="add_button">Add</string>
     <string name="update_button">Update</string>
     <string name="cancel_button">Cancel</string>
+    <string name="confirm_button">Confirm</string>
 
-    <string name="empty_text_hint">Enter movie title</string>
+    <string name="menu_description">Options</string>
+
+    <string name="menu_add_title">Add a category</string>
+    <string name="menu_edit_title">Edit name</string>
+    <string name="empty_text_hint">Enter category title</string>
     <string name="empty_text_error">The name cannot be empty.</string>
 
-    <string name="menu_add_title">Add a movie</string>
-    <string name="menu_edit_title">Edit name</string>
+    <string name="menu_add_item_title">Add a movie</string>
+    <string name="empty_text_item_hint">Enter movie title</string>
 
     <string name="menu_edit">Edit</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_check">Watch</string>
     <string name="menu_reset">Reset</string>
+
+    <string name="warning_title">Are you sure?</string>
+    <string name="warning_delete">Do you really want to delete this entry?</string>
 </resources>

@@ -16,5 +16,6 @@
         android:layout_height="48dp"
         android:layout_alignParentEnd="true"
         android:src="@drawable/ic_vertical_dot"
-        android:padding="8dp"/>
+        android:padding="8dp"
+        android:contentDescription="@string/menu_description"/>
 </RelativeLayout>

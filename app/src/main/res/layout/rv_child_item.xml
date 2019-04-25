@@ -7,5 +7,24 @@
         android:id="@+id/chbox_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"/>
+        android:padding="16dp"
+        android:layout_toStartOf="@id/iv_edit"/>
+
+    <ImageView
+        android:id="@+id/iv_edit"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_edit"
+        android:contentDescription="@string/menu_edit"
+        android:layout_toStartOf="@id/iv_delete"/>
+    
+    <ImageView
+        android:id="@+id/iv_delete"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_delete"
+        android:contentDescription="@string/menu_delete"
+        android:layout_alignParentEnd="true"/>
 </RelativeLayout>

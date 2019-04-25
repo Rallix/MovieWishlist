@@ -137,8 +137,15 @@ class DashboardActivity : AppCompatActivity() {
                             activity.updateItemDialog(todo)
                         }
                         R.id.menu_delete -> {
-                            activity.dbHandler.deleteTodo(todo.id)
-                            activity.refreshList()
+                            val warningDialog = AlertDialog.Builder(activity)
+                            warningDialog.setTitle(R.string.warning_title)
+                            warningDialog.setMessage(R.string.warning_delete)
+                            warningDialog.setNegativeButton(R.string.cancel_button) { _: DialogInterface?, _: Int -> }
+                            warningDialog.setPositiveButton(R.string.confirm_button) { _: DialogInterface?, _: Int ->
+                                activity.dbHandler.deleteTodo(todo.id)
+                                activity.refreshList()
+                            }
+                            warningDialog.show()
                         }
                         R.id.menu_check -> {
                             activity.dbHandler.watchTodoItem(todo.id, true)

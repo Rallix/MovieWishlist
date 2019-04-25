@@ -22,6 +22,7 @@
     <string name="menu_delete">Delete</string>
     <string name="menu_check">Watch</string>
     <string name="menu_reset">Reset</string>
+    <string name="menu_move">Move</string>
 
     <string name="warning_title">Are you sure?</string>
     <string name="warning_delete">Do you really want to delete this entry?</string>

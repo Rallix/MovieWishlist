@@ -26,5 +26,14 @@
         android:padding="8dp"
         android:src="@drawable/ic_delete"
         android:contentDescription="@string/menu_delete"
+        android:layout_toStartOf="@id/iv_move"/>
+
+    <ImageView
+        android:id="@+id/iv_move"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_move"
+        android:contentDescription="@string/menu_move"
         android:layout_alignParentEnd="true"/>
 </RelativeLayout>

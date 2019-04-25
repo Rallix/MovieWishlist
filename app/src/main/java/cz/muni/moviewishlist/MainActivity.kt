@@ -14,7 +14,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        /* Animation */
+        startActivity(Intent(this, DashboardActivity::class.java))
+
+        /* Splash screen
         ic_logo.startAnimation(AnimationUtils.loadAnimation(this, R.anim.splash_in)) // 300 ms
         Handler().postDelayed({
             ic_logo.startAnimation(AnimationUtils.loadAnimation(this, R.anim.splash_out))
@@ -23,6 +25,6 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this, DashboardActivity::class.java))
                 finish()
             }, 500)
-        }, 1500)
+        }, 1500) */
     }
 }

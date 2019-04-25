@@ -83,7 +83,6 @@ class DbHandler(val context: Context) : SQLiteOpenHelper(
     }
 
     fun getTodoItems(todoId: Long): MutableList<ToDoItem> {
-        // TODO: Part 3 | https://youtu.be/HTtAOW_GHE4?list=PLCH0RJhrZ8JKBdBo2HzjeIViT9OfdEjbV&t=323
         val db = readableDatabase
         return db.use { database ->
             val result: MutableList<ToDoItem> = ArrayList()

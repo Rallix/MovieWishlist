@@ -19,6 +19,20 @@ import cz.muni.moviewishlist.database.DbHandler
 import cz.muni.moviewishlist.database.ToDo
 import kotlinx.android.synthetic.main.activity_dashboard.*
 
+/*
+Minimal requirements:
+
+Aplikace pro vedení záznamů o filmech, které uživatel plánuje v budoucnu shlédnout.
+Záznamy se ukládají do databáze a při zobrazení je lze řadit dle různých kritérií.
+Možnost zaslání upozornění ve formě notifikace v určitý čas.
+ */
+
+// TODO:
+// Diakritika
+// Search bar | Vyhledávat z IMDb nebo přidat kliknutím nahoře
+// Odstranit Splash Screen
+// Víc barev | Jiná barva toolbaru
+
 class DashboardActivity : AppCompatActivity() {
 
     lateinit var dbHandler: DbHandler

@@ -32,6 +32,7 @@ Možnost zaslání upozornění ve formě notifikace v určitý čas.
 // Search bar | Vyhledávat z IMDb nebo přidat kliknutím nahoře
 // Odstranit Splash Screen
 // Víc barev | Jiná barva toolbaru
+// Notifikace dle času
 
 class DashboardActivity : AppCompatActivity() {
 

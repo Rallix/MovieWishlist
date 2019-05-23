@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -18,21 +19,6 @@ import android.widget.TextView
 import cz.muni.moviewishlist.database.DbHandler
 import cz.muni.moviewishlist.database.ToDo
 import kotlinx.android.synthetic.main.activity_dashboard.*
-
-/*
-Minimal requirements:
-
-Aplikace pro vedení záznamů o filmech, které uživatel plánuje v budoucnu shlédnout.
-Záznamy se ukládají do databáze a při zobrazení je lze řadit dle různých kritérií.
-Možnost zaslání upozornění ve formě notifikace v určitý čas.
- */
-
-// TODO:
-// Diakritika
-// Search bar | Vyhledávat z IMDb nebo přidat kliknutím nahoře
-// Odstranit Splash Screen
-// Víc barev | Jiná barva toolbaru
-// Notifikace dle času
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -121,7 +107,7 @@ class DashboardActivity : AppCompatActivity() {
     /**
      * Binds data to [RecyclerView]
      */
-    class DashboardAdapter(val activity: DashboardActivity, val list: MutableList<ToDo>) :
+    class DashboardAdapter(private val activity: DashboardActivity, private val list: MutableList<ToDo>) :
         RecyclerView.Adapter<DashboardAdapter.ViewHolder>() {
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val todoName: TextView = view.findViewById(R.id.tv_todo_name)

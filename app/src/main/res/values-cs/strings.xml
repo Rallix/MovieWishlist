@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Movie Wishlist</string>
+    <string name="add_button">Přidat</string>
+    <string name="cancel_button">Zrušit</string>
+    <string name="category_movies">Filmy</string>
+    <string name="category_series">Seriály</string>
+    <string name="confirm_button">Potvrdit</string>
+    <string name="dashboard_title">Kategorie</string>
+    <string name="empty_text_error">Jméno nemůže být prázdné</string>
+    <string name="empty_text_hint">Zadejte název kategorie</string>
+    <string name="empty_text_item_hint">Zadejte název filmu</string>
+    <string name="menu_add_item_title">Přidat film</string>
+    <string name="menu_add_title">Přidat kategorii</string>
+    <string name="menu_delete">Smazat</string>
+    <string name="menu_description">Možnosti</string>
+    <string name="menu_edit">Upravit</string>
+    <string name="menu_edit_title">Upravit jméno</string>
+    <string name="menu_check">Zhlédnout</string>
+    <string name="menu_move">Posunout</string>
+    <string name="menu_reset">Obnovit</string>
+    <string name="search_button">Hledat</string>
+    <string name="splash_icon_description">Ikona</string>
+    <string name="update_button">Aktualizovat</string>
+    <string name="warning_delete">Opravdu chcete smazat tuto položku?</string>
+    <string name="warning_title">Jste si jistí?</string>
+</resources>

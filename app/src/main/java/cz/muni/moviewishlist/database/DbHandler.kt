@@ -4,13 +4,14 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
+import cz.muni.moviewishlist.R
 
-class DbHandler(val context: Context) : SQLiteOpenHelper(
+class DbHandler(private val context: Context) : SQLiteOpenHelper(
     context,
     DB_NAME, null,
     DB_VERSION
 ) {
+
     override fun onCreate(db: SQLiteDatabase) {
         val createToDoTable = "CREATE TABLE $TABLE_TODO (" +
                 "$COL_ID integer PRIMARY KEY AUTOINCREMENT," +
@@ -25,6 +26,15 @@ class DbHandler(val context: Context) : SQLiteOpenHelper(
 
         db.execSQL(createToDoTable)
         db.execSQL(createToDoItemTable)
+
+        // Add two default categories
+        val movieCategory = ContentValues()
+        movieCategory.put(COL_NAME, context.getString(R.string.category_movies))
+        val seriesCategory = ContentValues()
+        seriesCategory.put(COL_NAME, context.getString(R.string.category_series))
+
+        db.insert(TABLE_TODO, null, movieCategory)
+        db.insert(TABLE_TODO, null, seriesCategory)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {

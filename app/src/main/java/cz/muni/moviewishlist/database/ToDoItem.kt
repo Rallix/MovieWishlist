@@ -5,4 +5,7 @@ class ToDoItem {
     var toDoId:Long = -1
     var itemName = ""
     var watched = false
+
+    override fun toString(): String = itemName
+
 }

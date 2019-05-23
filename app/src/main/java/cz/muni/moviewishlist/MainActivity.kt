@@ -1,30 +1,17 @@
 package cz.muni.moviewishlist
 
+
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.text.Editable
-import android.text.TextWatcher
-import android.widget.Toast
-import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import kotlinx.android.synthetic.main.activity_main.*
-import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
-
-    // private val queue : RequestQueue? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //startActivity(Intent(this, DashboardActivity::class.java))
-
-
+        startActivity(Intent(this, DashboardActivity::class.java))
 
         /* Splash screen
         ic_logo.startAnimation(AnimationUtils.loadAnimation(this, R.anim.splash_in)) // 300 ms
@@ -37,6 +24,7 @@ class MainActivity : AppCompatActivity() {
             }, 500)
         }, 1500) */
 
+        /*
         val jsonobj = JSONObject()
         test_search.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
@@ -61,6 +49,7 @@ class MainActivity : AppCompatActivity() {
                 queue.add(req)
             }
         })
+        */
     }
 /*
     override fun onStop() {

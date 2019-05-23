@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SearchView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.text.TextUtils
 import android.view.*
@@ -27,6 +28,8 @@ class ItemActivity : AppCompatActivity() {
     var adapter : ItemAdapter? = null
     var list : MutableList<ToDoItem>? = null
 
+    var displayList : MutableList<ToDoItem>? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +44,7 @@ class ItemActivity : AppCompatActivity() {
         dbHandler = DbHandler(this)
         rv_item.layoutManager = LinearLayoutManager(this)
 
-        // Create new sub-item on plus button
+        // Create new sub-item on ic_plus button
         fab_item.setOnClickListener {
             addItemDialog()
         }
@@ -63,6 +66,29 @@ class ItemActivity : AppCompatActivity() {
             }
         })
         touchHelper?.attachToRecyclerView(rv_item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        // Search
+        menuInflater.inflate(R.menu.main, menu)
+        val searchItem = menu?.findItem(R.id.menu_search)
+        if (searchItem != null) {
+            val searchView = searchItem.actionView as SearchView
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return true
+                }
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    if (newText!!.isNotBlank()) refreshList(newText)
+                    else refreshList()
+
+                    return true
+                }
+
+            })
+        }
+
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onResume() {
@@ -127,11 +153,24 @@ class ItemActivity : AppCompatActivity() {
     }
 
     /**
-     * Populates the [RecyclerView] with newly inserted items.
+     * Populates the [RecyclerView] with newly inserted items and optionally filters them.
      */
-    private fun refreshList() {
+    private fun refreshList(searchFilter:String = "") {
         list = dbHandler.getTodoItems(todoId)
-        adapter = ItemAdapter(this, list!!)
+        displayList?.clear()
+        if (searchFilter.isNotBlank()) {
+            // Filter searched
+            val search = searchFilter.trim().toLowerCase()
+            list?.forEach {
+                if (it.itemName.toLowerCase().contains(search)) {
+                    displayList?.add(it)
+                }
+            }
+        } else {
+            // Copy the entire list
+            displayList = list?.toMutableList()
+        }
+        adapter = ItemAdapter(this, displayList!!)
         rv_item.adapter = adapter
     }
 

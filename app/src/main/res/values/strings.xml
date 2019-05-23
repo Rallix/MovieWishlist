@@ -1,12 +1,17 @@
 <resources>
     <string name="app_name">Movie Wishlist</string>
-    <string name="dashboard_title">Movie Categories</string>
+
+    <string name="dashboard_title">Categories</string>
     <string name="splash_icon_description">Icon</string>
+
+    <string name="category_movies">Movies</string>
+    <string name="category_series">Series</string>
 
     <string name="add_button">Add</string>
     <string name="update_button">Update</string>
     <string name="cancel_button">Cancel</string>
     <string name="confirm_button">Confirm</string>
+    <string name="search_button">Search</string>
 
     <string name="menu_description">Options</string>
 

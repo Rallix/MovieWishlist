@@ -2,7 +2,7 @@
 <project version="4">
   <component name="DBNavigator.Project.DataEditorManager">
     <record-view-column-sorting-type value="BY_INDEX" />
-    <value-preview-text-wrapping value="true" />
+    <value-preview-text-wrapping value="false" />
     <value-preview-pinned value="false" />
   </component>
   <component name="DBNavigator.Project.DataExportManager">
@@ -24,13 +24,13 @@
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
     <loaded-nodes>
-      <connection connection-id="6b1a0c6c-df32-49ba-99b6-9bc131650755">
-        <schema name="main" object-types="table, column, index, dataset trigger, view, constraint" />
+      <connection connection-id="68f7feeb-3494-408e-92b7-5250ac5112ec">
+        <schema name="main" object-types="column, index, view, table, dataset trigger, constraint" />
       </connection>
     </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
-    <connection id="6b1a0c6c-df32-49ba-99b6-9bc131650755">
+    <connection id="68f7feeb-3494-408e-92b7-5250ac5112ec">
       <console name="Connection" type="STANDARD" schema="main" session="Main" />
     </connection>
   </component>
@@ -38,14 +38,11 @@
     <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
-    <connection id="6b1a0c6c-df32-49ba-99b6-9bc131650755" />
+    <connection id="68f7feeb-3494-408e-92b7-5250ac5112ec" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
-    <filter-actions connection-id="6b1a0c6c-df32-49ba-99b6-9bc131650755" dataset="main.ToDo" active-filter-id="">
-      <filter id="9cdcb5ec-34ec-47b9-ac00-9795d5f8b0af" name="Filter 1" temporary="false" custom-name="false" type="basic" join-type="AND">
-        <condition column="id" operator="=" value="" active="true" />
-      </filter>
-    </filter-actions>
+    <filter-actions connection-id="68f7feeb-3494-408e-92b7-5250ac5112ec" dataset="main.MovieItem" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="68f7feeb-3494-408e-92b7-5250ac5112ec" dataset="main.Category" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />
@@ -70,7 +67,7 @@
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
-      <connection id="6b1a0c6c-df32-49ba-99b6-9bc131650755" active="true">
+      <connection id="68f7feeb-3494-408e-92b7-5250ac5112ec" active="true">
         <database>
           <name value="Connection" />
           <description value="" />
@@ -85,7 +82,7 @@
           <port value="" />
           <database value="" />
           <files>
-            <file path="D:\Android\MovieList" schema="main" />
+            <file path="E:\Dokumenty\AndroidStudio\DeviceExplorer\samsung-sm_j730f-520069e9f4cfc409\data\data\cz.muni.moviewishlist\databases\MovieList" schema="main" />
           </files>
           <os-authentication value="false" />
           <empty-authentication value="false" />

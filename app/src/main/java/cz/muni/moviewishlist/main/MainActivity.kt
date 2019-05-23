@@ -1,9 +1,11 @@
-package cz.muni.moviewishlist
+package cz.muni.moviewishlist.main
 
 
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import cz.muni.moviewishlist.R
+import cz.muni.moviewishlist.categories.CategoryActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -11,7 +13,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        startActivity(Intent(this, DashboardActivity::class.java))
+        startActivity(Intent(this, CategoryActivity::class.java))
 
         /* Splash screen
         ic_logo.startAnimation(AnimationUtils.loadAnimation(this, R.anim.splash_in)) // 300 ms
@@ -19,7 +21,7 @@ class MainActivity : AppCompatActivity() {
             ic_logo.startAnimation(AnimationUtils.loadAnimation(this, R.anim.splash_out))
             Handler().postDelayed({
                 ic_logo.visibility = View.GONE
-                startActivity(Intent(this, DashboardActivity::class.java))
+                startActivity(Intent(this, CategoryActivity::class.java))
                 finish()
             }, 500)
         }, 1500) */

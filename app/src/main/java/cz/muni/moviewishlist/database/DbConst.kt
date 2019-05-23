@@ -1,14 +1,17 @@
 package cz.muni.moviewishlist.database
 
-const val DB_NAME = "MovieList"
+const val DATABASE_NAME = "MovieList"
 const val DB_VERSION = 1
 
-const val TABLE_TODO = "ToDo"
 const val COL_ID = "id"
-const val COL_CREATED_AT = "createdAt"
-const val COL_NAME = "name"
 
-const val TABLE_TODO_ITEM = "ToDoItem"
-const val COL_TODO_ID = "toDoId"
-const val COL_TODO_ITEM_NAME = "itemName"
-const val COL_TODO_WATCHED = "watched"
+const val TABLE_CATEGORY = "Category"
+const val COL_CATEGORY_CREATED_AT = "createdAt"
+const val COL_CATEGORY_NAME = "name"
+
+const val TABLE_MOVIE_ITEM = "MovieItem"
+const val COL_MOVIE_ITEM_ID = "movieId"
+const val COL_MOVIE_ITEM_NAME = "itemName"
+const val COL_MOVIE_ITEM_CREATED_AT = "createdAt"
+const val COL_MOVIE_ITEM_WATCHED = "watched"
+const val COL_MOVIE_ITEM_ORDER = "customOrder"

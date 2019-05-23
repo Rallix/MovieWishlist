@@ -1,4 +1,4 @@
-package cz.muni.moviewishlist
+package cz.muni.moviewishlist.movies
 
 import android.annotation.SuppressLint
 import android.content.DialogInterface
@@ -14,37 +14,41 @@ import android.view.*
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
+import cz.muni.moviewishlist.main.INTENT_CATEGORY_ID
+import cz.muni.moviewishlist.main.INTENT_CATEGORY_NAME
+import cz.muni.moviewishlist.R
 import cz.muni.moviewishlist.database.DbHandler
-import cz.muni.moviewishlist.database.ToDoItem
-import kotlinx.android.synthetic.main.activity_item.*
+import cz.muni.moviewishlist.main.setStrikeThrough
+import kotlinx.android.synthetic.main.activity_movie.*
 import java.util.*
 
-class ItemActivity : AppCompatActivity() {
+class MovieActivity : AppCompatActivity() {
 
     lateinit var dbHandler: DbHandler
-    var todoId: Long = -1
+    private var categoryId: Long = -1
 
     var touchHelper :ItemTouchHelper? = null
     var adapter : ItemAdapter? = null
-    var list : MutableList<ToDoItem>? = null
+    var list : MutableList<MovieItem>? = null
 
-    var displayList : MutableList<ToDoItem>? = null
+    var displayList : MutableList<MovieItem>? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_item)
+        setContentView(R.layout.activity_movie)
         setSupportActionBar(item_toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.title = intent.getStringExtra(INTENT_TODO_NAME)
-        todoId = intent.getLongExtra(INTENT_TODO_ID, -1)
+        supportActionBar?.title = intent.getStringExtra(INTENT_CATEGORY_NAME)
+        categoryId = intent.getLongExtra(INTENT_CATEGORY_ID, -1)
 
         dbHandler = DbHandler(this)
         rv_item.layoutManager = LinearLayoutManager(this)
 
-        // Create new sub-item on ic_plus button
+        // Create new movie with plus button
         fab_item.setOnClickListener {
             addItemDialog()
         }
@@ -52,10 +56,10 @@ class ItemActivity : AppCompatActivity() {
         // Drag & Drop
         // TODO: Drag & Drop order is not preserved -> should be saved back to database || new row 'custom_order'
         touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
-            override fun onMove(p0: RecyclerView, p1: RecyclerView.ViewHolder, p2: RecyclerView.ViewHolder): Boolean {
-                // Swamp two items (vertically)
-                val sourcePosition = p1.adapterPosition
-                val targetPosition = p2.adapterPosition
+            override fun onMove(p0: RecyclerView, position1: RecyclerView.ViewHolder, position2: RecyclerView.ViewHolder): Boolean {
+                // Swap two items (vertically)
+                val sourcePosition = position1.adapterPosition
+                val targetPosition = position2.adapterPosition
                 Collections.swap(list, sourcePosition, targetPosition)
                 adapter?.notifyItemMoved(sourcePosition, targetPosition)
                 return true
@@ -97,26 +101,26 @@ class ItemActivity : AppCompatActivity() {
     }
 
     /**
-     * Creates a dialog for adding a new [ToDoItem] entry and refreshes the list.
+     * Creates a dialog for adding a new [MovieItem] entry and refreshes the list.
      */
     private fun addItemDialog() {
         val dialog = AlertDialog.Builder(this)
         dialog.setTitle(R.string.menu_add_item_title)
-        val view = layoutInflater.inflate(R.layout.dialog_child, null)
-        val todoName = view.findViewById<EditText>(R.id.et_todoItem)
+        val view = layoutInflater.inflate(R.layout.dialog_movie, null)
+        val movieName = view.findViewById<EditText>(R.id.et_movieItem)
 
         dialog.setView(view)
         dialog.setPositiveButton(R.string.add_button) { _: DialogInterface, _: Int ->
-            val name = todoName.text.toString().trim()
+            val name = movieName.text.toString().trim()
             if (TextUtils.isEmpty(name)) {
                 // TODO: Prevent from being closed
-                todoName.error = getString(R.string.empty_text_error)
+                movieName.error = getString(R.string.empty_text_error)
             } else {
-                val item = ToDoItem()
-                item.toDoId = todoId
+                val item = MovieItem()
+                item.movieId = categoryId
                 item.itemName = name
                 item.watched = false
-                dbHandler.addTodoItem(item)
+                dbHandler.addMovieItem(item)
                 refreshList()
             }
         }
@@ -125,26 +129,26 @@ class ItemActivity : AppCompatActivity() {
     }
 
     /**
-     * Creates a dialog for updating a [ToDoItem] and refreshes the list afterwards
+     * Creates a dialog for updating a [MovieItem] and refreshes the list afterwards
      */
-    private fun updateItemDialog(toDoItem: ToDoItem) {
+    private fun updateItemDialog(movieItem: MovieItem) {
         val dialog = AlertDialog.Builder(this)
         dialog.setTitle(R.string.menu_edit_title)
-        val view = layoutInflater.inflate(R.layout.dialog_child, null)
-        val todoName = view.findViewById<EditText>(R.id.et_todoItem)
-        todoName.setText(toDoItem.itemName)
+        val view = layoutInflater.inflate(R.layout.dialog_movie, null)
+        val movieName = view.findViewById<EditText>(R.id.et_movieItem)
+        movieName.setText(movieItem.itemName)
         dialog.setView(view)
         dialog.setPositiveButton(R.string.update_button) { _: DialogInterface, _: Int ->
-            val name = todoName.text.toString().trim()
+            val name = movieName.text.toString().trim()
             if (TextUtils.isEmpty(name)) {
                 // TODO: Prevent from being closed
-                todoName.error = getString(R.string.empty_text_error)
+                movieName.error = getString(R.string.empty_text_error)
             } else {
-                toDoItem.toDoId = todoId
-                toDoItem.itemName = name
-                toDoItem.watched = false
+                movieItem.movieId = categoryId
+                movieItem.itemName = name
+                movieItem.watched = false
 
-                dbHandler.updateTodoItem(toDoItem)
+                dbHandler.updateMovieItem(movieItem)
                 refreshList()
             }
         }
@@ -156,7 +160,7 @@ class ItemActivity : AppCompatActivity() {
      * Populates the [RecyclerView] with newly inserted items and optionally filters them.
      */
     private fun refreshList(searchFilter:String = "") {
-        list = dbHandler.getTodoItems(todoId)
+        list = dbHandler.getMovieItems(categoryId)
         displayList?.clear()
         if (searchFilter.isNotBlank()) {
             // Filter searched
@@ -170,18 +174,19 @@ class ItemActivity : AppCompatActivity() {
             // Copy the entire list
             displayList = list?.toMutableList()
         }
-        adapter = ItemAdapter(this, displayList!!)
+        adapter = ItemAdapter(this, displayList!!) // TODO: Don't recreate ItemAdapter
         rv_item.adapter = adapter
     }
 
     /**
-     * Binds data to [RecyclerView]
+     * Binds data to [MovieItem]'s [RecyclerView].
      */
-    class ItemAdapter(val activity: ItemActivity, val list: MutableList<ToDoItem>) :
+    class ItemAdapter(private val activity: MovieActivity, private val list: MutableList<MovieItem>) :
         RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
 
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val itemName : CheckBox = view.findViewById(R.id.chbox_item)
+            val checkBox : CheckBox = view.findViewById(R.id.chbox_item)
+            val movieName : TextView = view.findViewById(R.id.tv_movie_name)
             val edit : ImageView = view.findViewById(R.id.iv_edit)
             val delete : ImageView = view.findViewById(R.id.iv_delete)
             val move : ImageView = view.findViewById(R.id.iv_move)
@@ -189,25 +194,64 @@ class ItemActivity : AppCompatActivity() {
 
         override fun getItemCount(): Int = list.size
         override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(LayoutInflater.from(activity).inflate(R.layout.rv_child_item, viewGroup, false))
+            return ViewHolder(
+                LayoutInflater.from(activity).inflate(
+                    R.layout.rv_movie,
+                    viewGroup,
+                    false
+                )
+            )
         }
 
-        @SuppressLint("ClickableViewAccessibility")
+        @SuppressLint("ClickableViewAccessibility", "PrivateResource")
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-            val todoItem = list[position]
+            val movieItem = list[position]
 
-            viewHolder.itemName.text = todoItem.itemName
-            viewHolder.itemName.isChecked = todoItem.watched
+            viewHolder.movieName.text = movieItem.toString()
+            viewHolder.checkBox.isChecked = movieItem.watched
+
+            // Apply colour + strikethrough
+            fun applyWatched() {
+                viewHolder.movieName.setTextColor(
+                    if (!movieItem.watched) activity.getColor(R.color.primary_text_default_material_light)
+                    else activity.getColor(R.color.primary_text_disabled_material_light)
+                )
+                viewHolder.movieName.setStrikeThrough(movieItem.watched)
+            }
+
+            applyWatched()
 
             // Mark as watched / unwatched
-            viewHolder.itemName.setOnClickListener {
-                todoItem.watched = !todoItem.watched
-                activity.dbHandler.updateTodoItem(todoItem)
+            fun markWatched() {
+                movieItem.watched = !movieItem.watched
+                activity.dbHandler.updateMovieItem(movieItem)
+                applyWatched()
+
+                // Move the item (TODO: Fix)
+                /*
+                if (!movieItem.watched) {
+                    // → Start
+                    list.add(0, movieItem)
+                    list.removeAt(position)
+                    notifyItemMoved(position, 0)
+                } else {
+                    // → End
+                    list.removeAt(position)
+                    list.add(movieItem)
+                    notifyItemMoved(position, list.size-1)
+                }*/
+            }
+
+            viewHolder.checkBox.setOnClickListener {
+                markWatched()
+            }
+            viewHolder.movieName.setOnClickListener {
+                markWatched()
             }
 
             // Edit
             viewHolder.edit.setOnClickListener {
-                activity.updateItemDialog(todoItem)
+                activity.updateItemDialog(movieItem)
             }
 
             // Delete
@@ -217,7 +261,7 @@ class ItemActivity : AppCompatActivity() {
                 warningDialog.setMessage(R.string.warning_delete)
                 warningDialog.setNegativeButton(R.string.cancel_button) { _: DialogInterface?, _: Int -> }
                 warningDialog.setPositiveButton(R.string.confirm_button) { _: DialogInterface?, _: Int ->
-                    activity.dbHandler.deleteTodoItem(todoItem.id)
+                    activity.dbHandler.deleteMovieItem(movieItem.id)
                     activity.refreshList()
                 }
                 warningDialog.show()

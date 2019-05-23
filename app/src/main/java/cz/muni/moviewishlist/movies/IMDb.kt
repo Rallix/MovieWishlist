@@ -1,4 +1,4 @@
-package cz.muni.moviewishlist
+package cz.muni.moviewishlist.movies
 
 import android.content.Context
 import android.graphics.Bitmap

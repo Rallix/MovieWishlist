@@ -10,7 +10,7 @@ const val COL_CATEGORY_CREATED_AT = "createdAt"
 const val COL_CATEGORY_NAME = "name"
 
 const val TABLE_MOVIE_ITEM = "MovieItem"
-const val COL_MOVIE_ITEM_ID = "movieId"
+const val COL_MOVIE_ITEM_CATEGORY_ID = "categoryId"
 const val COL_MOVIE_ITEM_NAME = "itemName"
 const val COL_MOVIE_ITEM_CREATED_AT = "createdAt"
 const val COL_MOVIE_ITEM_WATCHED = "watched"

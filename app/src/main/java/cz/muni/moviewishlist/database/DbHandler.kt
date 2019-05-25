@@ -22,7 +22,7 @@ class DbHandler(private val context: Context) : SQLiteOpenHelper(
                 "$COL_CATEGORY_NAME varchar);"
         val createToDoItemTable = "CREATE TABLE $TABLE_MOVIE_ITEM (" +
                 "$COL_ID integer PRIMARY KEY AUTOINCREMENT," +
-                "$COL_MOVIE_ITEM_ID integer," +
+                "$COL_MOVIE_ITEM_CATEGORY_ID integer," +
                 "$COL_MOVIE_ITEM_CREATED_AT datetime DEFAULT CURRENT_TIMESTAMP," +
                 "$COL_MOVIE_ITEM_NAME varchar," +
                 "$COL_MOVIE_ITEM_WATCHED boolean," +
@@ -55,7 +55,7 @@ class DbHandler(private val context: Context) : SQLiteOpenHelper(
                 queryResult.use {
                     var hasItem = queryResult.moveToFirst()
                     while(hasItem) {
-                        val id = queryResult.getInt(queryResult.getColumnIndex(COL_MOVIE_ITEM_ID))
+                        val id = queryResult.getInt(queryResult.getColumnIndex(COL_MOVIE_ITEM_CATEGORY_ID))
                         val values = ContentValues()
                         currentOrder += 20
                         values.put(COL_MOVIE_ITEM_ORDER, currentOrder)
@@ -85,14 +85,17 @@ class DbHandler(private val context: Context) : SQLiteOpenHelper(
     /**
      * Adds a [MovieItem] entry to the database.
      */
-    fun addMovieItem(item: MovieItem): Boolean {
+    fun addMovieItem(movie: MovieItem): Boolean {
         val db = writableDatabase
         val cv = ContentValues()
-        cv.put(COL_MOVIE_ITEM_NAME, item.itemName)
-        cv.put(COL_MOVIE_ITEM_ID, item.movieId)
+        cv.put(COL_MOVIE_ITEM_NAME, movie.itemName)
+        cv.put(COL_MOVIE_ITEM_CATEGORY_ID, movie.categoryId)
 
-        cv.put(COL_MOVIE_ITEM_WATCHED, item.watched)
-        cv.put(COL_MOVIE_ITEM_ORDER, (DatabaseUtils.queryNumEntries(db, TABLE_MOVIE_ITEM) + 1) * 10) // count * 10
+        cv.put(COL_MOVIE_ITEM_WATCHED, movie.watched)
+
+        val totalCountInCategory = DatabaseUtils.queryNumEntries(db, TABLE_MOVIE_ITEM,
+            "$COL_MOVIE_ITEM_CATEGORY_ID = ?", arrayOf(movie.categoryId.toString()))
+        cv.put(COL_MOVIE_ITEM_ORDER, totalCountInCategory + 1)
 
         val result = db.insert(TABLE_MOVIE_ITEM, null, cv)
         return result != (-1).toLong()
@@ -120,28 +123,28 @@ class DbHandler(private val context: Context) : SQLiteOpenHelper(
         }
     }
 
-    fun getMovieItems(todoId: Long): MutableList<MovieItem> {
+    fun getMovieItems(categoryId: Long): MutableList<MovieItem> {
         val db = readableDatabase
         return db.use { database ->
             val result: MutableList<MovieItem> = ArrayList()
             val queryResult = database.rawQuery(
-                "SELECT * FROM $TABLE_MOVIE_ITEM WHERE $COL_MOVIE_ITEM_ID = ?",
-                arrayOf(todoId.toString())
+                "SELECT * FROM $TABLE_MOVIE_ITEM WHERE $COL_MOVIE_ITEM_CATEGORY_ID = ?",
+                arrayOf(categoryId.toString())
             )
             if (queryResult.moveToFirst()) {
                 queryResult.use {
                     do {
                         val item = MovieItem()
-                        item.movieId = todoId
+                        item.categoryId = categoryId
                         item.id = queryResult.getLong(queryResult.getColumnIndex(COL_ID))
                         item.itemName = queryResult.getString(queryResult.getColumnIndex(COL_MOVIE_ITEM_NAME))
                         item.watched = queryResult.getInt(queryResult.getColumnIndex(COL_MOVIE_ITEM_WATCHED)) == 1 // boolean
-
+                        item.order = queryResult.getLong(queryResult.getColumnIndex(COL_MOVIE_ITEM_ORDER))
                         result.add(item)
                     } while (queryResult.moveToNext())
                 }
             }
-
+            result.sortBy { it.order }
             return@use result
         }
     }
@@ -149,12 +152,12 @@ class DbHandler(private val context: Context) : SQLiteOpenHelper(
     /**
      * Updates a [Category] entry in the database.
      */
-    fun updateCategory(todo: Category) {
+    fun updateCategory(category: Category) {
         val db = writableDatabase
         val cv = ContentValues()
 
-        cv.put(COL_CATEGORY_NAME, todo.name)
-        db.update(TABLE_CATEGORY, cv, "$COL_ID = ?", arrayOf(todo.id.toString()))
+        cv.put(COL_CATEGORY_NAME, category.name)
+        db.update(TABLE_CATEGORY, cv, "$COL_ID = ?", arrayOf(category.id.toString()))
     }
 
     /**
@@ -164,18 +167,20 @@ class DbHandler(private val context: Context) : SQLiteOpenHelper(
         val db = writableDatabase
         val cv = ContentValues()
         cv.put(COL_MOVIE_ITEM_NAME, item.itemName)
-        cv.put(COL_MOVIE_ITEM_ID, item.movieId)
-
+        cv.put(COL_MOVIE_ITEM_CATEGORY_ID, item.categoryId)
         cv.put(COL_MOVIE_ITEM_WATCHED, item.watched)
+        cv.put(COL_MOVIE_ITEM_ORDER, item.order)
 
         db.update(TABLE_MOVIE_ITEM, cv, "$COL_ID = ?", arrayOf(item.id.toString()))
     }
 
-    fun deleteCategory(todoId: Long) {
+
+
+    fun deleteCategory(categoryId: Long) {
         val db = writableDatabase
         // Delete with all its children
-        db.delete(TABLE_MOVIE_ITEM, "$COL_MOVIE_ITEM_ID = ?", arrayOf(todoId.toString()))
-        db.delete(TABLE_CATEGORY, "$COL_ID = ?", arrayOf(todoId.toString()))
+        db.delete(TABLE_MOVIE_ITEM, "$COL_MOVIE_ITEM_CATEGORY_ID = ?", arrayOf(categoryId.toString()))
+        db.delete(TABLE_CATEGORY, "$COL_ID = ?", arrayOf(categoryId.toString()))
     }
 
     fun deleteMovieItem(itemId: Long) {
@@ -183,17 +188,17 @@ class DbHandler(private val context: Context) : SQLiteOpenHelper(
         db.delete(TABLE_MOVIE_ITEM, "$COL_ID = ?", arrayOf(itemId.toString()))
     }
 
-    fun watchMovieItem(todoId: Long, watched: Boolean) {
+    fun watchMovieItem(categoryId: Long, watched: Boolean) {
         val db = writableDatabase
         val queryResult = db.rawQuery(
-            "SELECT * FROM $TABLE_MOVIE_ITEM WHERE $COL_MOVIE_ITEM_ID = ?",
-            arrayOf(todoId.toString())
+            "SELECT * FROM $TABLE_MOVIE_ITEM WHERE $COL_MOVIE_ITEM_CATEGORY_ID = ?",
+            arrayOf(categoryId.toString())
         )
         if (queryResult.moveToFirst()) {
             queryResult.use {
                 do {
                     val item = MovieItem()
-                    item.movieId = todoId
+                    item.categoryId = categoryId
                     item.id = queryResult.getLong(queryResult.getColumnIndex(COL_ID))
                     item.itemName = queryResult.getString(queryResult.getColumnIndex(COL_MOVIE_ITEM_NAME))
                     item.watched = watched

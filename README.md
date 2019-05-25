@@ -23,7 +23,7 @@ Aplikace pro ukládání seznamu filmů k pozdějšímu zhlédnutí.
 * [x] Oficiální Android ikony
     * [x] Menší
     * [x] Zarovnané na střed
-* [ ] Refaktorovat vše do vlastních tříd
+* [x] Refaktorovat vše do vlastních tříd
 * [x] Neobnobovat ItemAdapter při každém spuštění
 * [ ] Vyřešit *Watch* a *Reset* pro kategorii
     * [ ] Smazat zhlédnuté

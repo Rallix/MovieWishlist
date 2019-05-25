@@ -88,7 +88,7 @@ class CategoryActivity : AppCompatActivity() {
                 refreshList()
             } else {
                 // Empty movie name
-                // categoryName.error = getString(R.string.empty_text_error) // ← TODO: Prevent from being closed
+                // categoryName.error = getString(R.string.empty_text_error) // ← TODO: Prevent dialog from being closed
                 Toast.makeText(this, getText(R.string.empty_text_error), Toast.LENGTH_SHORT).show()
             }
         }

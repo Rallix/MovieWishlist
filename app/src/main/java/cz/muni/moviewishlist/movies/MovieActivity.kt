@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.helper.ItemTouchHelper
-import android.text.TextUtils
 import android.view.*
 import android.widget.*
 import com.android.volley.Request
@@ -52,15 +51,26 @@ class MovieActivity : AppCompatActivity() {
         }
 
         // Drag & Drop
-        // TODO: Drag & Drop order is not preserved -> should be saved back to database || new row 'custom_order'
+        // TODO: Swapping when search-filtering doesn't make sense
         touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
             override fun onMove(p0: RecyclerView, position1: RecyclerView.ViewHolder, position2: RecyclerView.ViewHolder): Boolean {
                 // Swap two items (vertically)
                 val sourcePosition = position1.adapterPosition
                 val targetPosition = position2.adapterPosition
                 Collections.swap(list, sourcePosition, targetPosition)
+
                 adapter?.notifyItemMoved(sourcePosition, targetPosition)
                 return true
+            }
+
+            override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+                super.clearView(recyclerView, viewHolder)
+                // Recalculate new order when Drag & Drop finishes
+                list?.forEachIndexed {index, movie ->
+                    movie.order = index.toLong() + 1
+                    dbHandler.updateMovieItem(movie)
+                }
+                // TODO: notifyDatasetChanged here changes the order back
             }
 
             override fun onSwiped(p0: RecyclerView.ViewHolder, p1: Int) {
@@ -108,13 +118,12 @@ class MovieActivity : AppCompatActivity() {
         val listAdapter = ArrayAdapter<String>(this, R.layout.lv_movie_result)
         searchResults.adapter = listAdapter
 
-
         dialog.setView(dialogView)
         dialog.setPositiveButton(R.string.add_button) { _: DialogInterface, _: Int ->
             val name = search.query.toString().trim()
             if (name.isNotEmpty()) {
                 val item = MovieItem()
-                item.movieId = categoryId
+                item.categoryId = categoryId
                 item.itemName = name
                 item.watched = false
                 dbHandler.addMovieItem(item)
@@ -135,7 +144,7 @@ class MovieActivity : AppCompatActivity() {
                 val movieTitle = searchResults.getItemAtPosition(position).toString()
 
                 val item = MovieItem()
-                item.movieId = categoryId
+                item.categoryId = categoryId
                 item.itemName = movieTitle
                 item.watched = false
                 dbHandler.addMovieItem(item)
@@ -197,7 +206,7 @@ class MovieActivity : AppCompatActivity() {
         dialog.setPositiveButton(R.string.update_button) { _: DialogInterface, _: Int ->
             val name = movieName.text.toString().trim()
             if (name.isNotEmpty()) {
-                movieItem.movieId = categoryId
+                movieItem.categoryId = categoryId
                 movieItem.itemName = name
                 movieItem.watched = false
 

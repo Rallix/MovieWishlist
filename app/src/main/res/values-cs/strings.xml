@@ -7,7 +7,7 @@
     <string name="category_series">Seriály</string>
     <string name="confirm_button">Potvrdit</string>
     <string name="dashboard_title">Kategorie</string>
-    <string name="empty_text_error">Jméno nemůže být prázdné</string>
+    <string name="empty_text_error">Jméno nemůže být prázdné.</string>
     <string name="empty_text_hint">Zadejte název kategorie</string>
     <string name="empty_text_item_hint">Zadejte název filmu</string>
     <string name="menu_add_item_title">Přidat film</string>
@@ -24,4 +24,5 @@
     <string name="update_button">Aktualizovat</string>
     <string name="warning_delete">Opravdu chcete smazat tuto položku?</string>
     <string name="warning_title">Jste si jistí?</string>
+    <string name="connection_error">Nejste připojeni k internetu.</string>
 </resources>

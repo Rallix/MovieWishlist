@@ -19,6 +19,7 @@
     <string name="menu_edit_title">Edit name</string>
     <string name="empty_text_hint">Enter category title</string>
     <string name="empty_text_error">The name cannot be empty.</string>
+    <string name="connection_error">You are not connected to the internet.</string>
 
     <string name="menu_add_item_title">Add a movie</string>
     <string name="empty_text_item_hint">Enter movie title</string>

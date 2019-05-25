@@ -11,15 +11,14 @@ import android.support.v7.widget.SearchView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.text.TextUtils
 import android.view.*
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import cz.muni.moviewishlist.main.INTENT_CATEGORY_ID
-import cz.muni.moviewishlist.main.INTENT_CATEGORY_NAME
+import android.widget.*
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import cz.muni.moviewishlist.R
 import cz.muni.moviewishlist.database.DbHandler
-import cz.muni.moviewishlist.main.setStrikeThrough
+import cz.muni.moviewishlist.main.*
 import kotlinx.android.synthetic.main.activity_movie.*
 import java.util.*
 
@@ -88,10 +87,8 @@ class MovieActivity : AppCompatActivity() {
 
                     return true
                 }
-
             })
         }
-
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -101,29 +98,93 @@ class MovieActivity : AppCompatActivity() {
     }
 
     /**
-     * Creates a dialog for adding a new [MovieItem] entry and refreshes the list.
+     * Creates a search dialog for adding a new [MovieItem] entry and refreshes the list.
      */
     private fun addItemDialog() {
         val dialog = AlertDialog.Builder(this)
         dialog.setTitle(R.string.menu_add_item_title)
-        val view = layoutInflater.inflate(R.layout.dialog_movie, null)
-        val movieName = view.findViewById<EditText>(R.id.et_movieItem)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_search_movie, null)
+        val search = dialogView.findViewById<SearchView>(R.id.sv_search_movieItem)
+        val searchResults = dialogView.findViewById<ListView>(R.id.lv_search_movieItem)
+        val listAdapter = ArrayAdapter<String>(this, R.layout.lv_movie_result)
+        searchResults.adapter = listAdapter
 
-        dialog.setView(view)
+        var success = false
+        searchResults.setOnItemClickListener { parent, view, position, id ->
+            if (success) {
+                val movieTitle = searchResults.getItemAtPosition(position).toString()
+
+                val item = MovieItem()
+                item.movieId = categoryId
+                item.itemName = movieTitle
+                item.watched = false
+                dbHandler.addMovieItem(item)
+                refreshList()
+                // Close dialog
+            }
+        }
+
+
+        search.setOnQueryTextListener (object : SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(s: String?): Boolean {
+                listAdapter.clear()
+                listAdapter.notifyDataSetChanged()
+                success = false
+                return true
+            }
+            override fun onQueryTextSubmit(s: String?): Boolean {
+                listAdapter.clear()
+                val url = "$OMDB_API&type=movie&s=${s.toString()}"
+
+                val queue = Volley.newRequestQueue(this@MovieActivity)
+                val req = JsonObjectRequest(Request.Method.GET, url, null,
+                    Response.Listener { response ->
+                        if (!response.getBoolean("Response")) {
+                            // Too many results or No result
+                            listAdapter.add(response.getString("Error"))
+                        } else {
+                            success = true
+                            val moviesArray = response.getJSONArray("Search")
+                            for (i in 0 until minOf(moviesArray.length(), OMDB_DISPLAY_LIMIT)) {
+                                val movieObj = moviesArray.getJSONObject(i)
+                                val title = movieObj.getString("Title")
+                                listAdapter.add(title)
+                            }
+
+                            // TODO: listView setOnClickListener
+                        }
+                        listAdapter.notifyDataSetChanged()
+                        // TODO: Too many results
+                        //Toast.makeText(this@MovieActivity, "$response[\"success\"]", Toast.LENGTH_SHORT).show()
+                        // var movies = response[\"success"\]
+
+                    },
+                    Response.ErrorListener {
+                        // Error message
+                        listAdapter.add(getString(R.string.connection_error))
+                        listAdapter.notifyDataSetChanged()
+                    })
+                queue.add(req)
+                return true
+            }
+        })
+
+        dialog.setView(dialogView)
         dialog.setPositiveButton(R.string.add_button) { _: DialogInterface, _: Int ->
-            val name = movieName.text.toString().trim()
-            if (TextUtils.isEmpty(name)) {
-                // TODO: Prevent from being closed
-                movieName.error = getString(R.string.empty_text_error)
-            } else {
+            val name = search.query.toString().trim()
+            if (name.isNotEmpty()) {
                 val item = MovieItem()
                 item.movieId = categoryId
                 item.itemName = name
                 item.watched = false
                 dbHandler.addMovieItem(item)
                 refreshList()
+            } else {
+                // Empty movie name
+                Toast.makeText(this, getText(R.string.empty_text_error), Toast.LENGTH_SHORT).show()
             }
         }
+
         dialog.setNegativeButton(R.string.cancel_button) { _: DialogInterface, _: Int -> }
         dialog.show()
     }

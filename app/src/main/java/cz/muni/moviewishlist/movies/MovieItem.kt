@@ -7,6 +7,6 @@ class MovieItem {
     var watched = false
     var order:Long = -1
 
-    override fun toString(): String = "$itemName ($order)"
+    override fun toString(): String = "$itemName"
 
 }

@@ -1,5 +1,7 @@
 # MovieWishlist
 
+Aplikace pro ukládání seznamu filmů k pozdějšímu zhlédnutí.
+
 ### ToDo:
  
 * [x] Záznamy o filmech v databázi
@@ -21,7 +23,7 @@
 * [x] Oficiální Android ikony
     * [x] Menší
     * [x] Zarovnané na střed
-* [ ] Refaktorovat vše do funkcí a menších tříd
+* [ ] Refaktorovat vše do vlastních tříd
 * [x] Neobnobovat ItemAdapter při každém spuštění
 * [ ] Vyřešit *Watch* a *Reset* pro kategorii
     * [ ] Smazat zhlédnuté

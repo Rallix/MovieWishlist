@@ -1,6 +1,5 @@
 package cz.muni.moviewishlist.movies
 
-import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -188,7 +187,7 @@ class MovieActivity : AppCompatActivity() {
     /**
      * Creates a dialog for updating a [MovieItem] and refreshes the list afterwards
      */
-    private fun updateItemDialog(movieItem: MovieItem) {
+    internal fun updateItemDialog(movieItem: MovieItem) {
         val dialog = AlertDialog.Builder(this)
         dialog.setTitle(R.string.menu_edit_title)
         val view = layoutInflater.inflate(R.layout.dialog_movie, null)
@@ -197,16 +196,16 @@ class MovieActivity : AppCompatActivity() {
         dialog.setView(view)
         dialog.setPositiveButton(R.string.update_button) { _: DialogInterface, _: Int ->
             val name = movieName.text.toString().trim()
-            if (TextUtils.isEmpty(name)) {
-                // TODO: Prevent from being closed
-                movieName.error = getString(R.string.empty_text_error)
-            } else {
+            if (name.isNotEmpty()) {
                 movieItem.movieId = categoryId
                 movieItem.itemName = name
                 movieItem.watched = false
 
                 dbHandler.updateMovieItem(movieItem)
                 refreshList()
+            } else {
+                // Empty movie name
+                Toast.makeText(this, getText(R.string.empty_text_error), Toast.LENGTH_SHORT).show()
             }
         }
         dialog.setNegativeButton(R.string.cancel_button) { _: DialogInterface, _: Int -> }
@@ -216,7 +215,7 @@ class MovieActivity : AppCompatActivity() {
     /**
      * Populates the [RecyclerView] with newly inserted items and optionally filters them.
      */
-    private fun refreshList(searchFilter:String = "") {
+    internal fun refreshList(searchFilter:String = "") {
         list = dbHandler.getMovieItems(categoryId)
         displayList?.clear()
         if (searchFilter.isNotBlank()) {
@@ -231,116 +230,11 @@ class MovieActivity : AppCompatActivity() {
             // Copy the entire list
             displayList = list?.toMutableList()
         }
-        if (rv_item.adapter == null) {
+        if (adapter == null || rv_item.adapter == null) {
             adapter = MovieAdapter(this, displayList!!) // TODO: Don't recreate
             rv_item.adapter = adapter
         } else {
             adapter?.recreate(displayList!!)
-        }
-    }
-
-    /**
-     * Binds data to [MovieItem]'s [RecyclerView].
-     */
-    class MovieAdapter(private val activity: MovieActivity, private val list: MutableList<MovieItem>) :
-        RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
-
-        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val checkBox : CheckBox = view.findViewById(R.id.chbox_item)
-            val movieName : TextView = view.findViewById(R.id.tv_movie_name)
-            val edit : ImageView = view.findViewById(R.id.iv_edit)
-            val delete : ImageView = view.findViewById(R.id.iv_delete)
-            val move : ImageView = view.findViewById(R.id.iv_move)
-        }
-
-        fun recreate(newList: MutableList<MovieItem>) {
-            this.list.clear()
-            this.list.addAll(newList)
-            notifyDataSetChanged()
-        }
-
-        override fun getItemCount(): Int = list.size
-        override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(
-                LayoutInflater.from(activity).inflate(
-                    R.layout.rv_movie,
-                    viewGroup,
-                    false
-                )
-            )
-        }
-
-        @SuppressLint("ClickableViewAccessibility", "PrivateResource")
-        override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-            val movieItem = list[position]
-
-            viewHolder.movieName.text = movieItem.toString()
-            viewHolder.checkBox.isChecked = movieItem.watched
-
-            // Apply colour + strikethrough
-            fun applyWatched() {
-                viewHolder.movieName.setTextColor(
-                    if (!movieItem.watched) activity.getColor(R.color.primary_text_default_material_light)
-                    else activity.getColor(R.color.primary_text_disabled_material_light)
-                )
-                viewHolder.movieName.setStrikeThrough(movieItem.watched)
-            }
-
-            applyWatched()
-
-            // Mark as watched / unwatched
-            fun markWatched() {
-                movieItem.watched = !movieItem.watched
-                activity.dbHandler.updateMovieItem(movieItem)
-                applyWatched()
-
-                // Move the item (TODO: Fix)
-                /*
-                if (!movieItem.watched) {
-                    // → Start
-                    list.add(0, movieItem)
-                    list.removeAt(position)
-                    notifyItemMoved(position, 0)
-                } else {
-                    // → End
-                    list.removeAt(position)
-                    list.add(movieItem)
-                    notifyItemMoved(position, list.size-1)
-                }*/
-            }
-
-            viewHolder.checkBox.setOnClickListener {
-                markWatched()
-            }
-            viewHolder.movieName.setOnClickListener {
-                markWatched()
-            }
-
-            // Edit
-            viewHolder.edit.setOnClickListener {
-                activity.updateItemDialog(movieItem)
-            }
-
-            // Delete
-            viewHolder.delete.setOnClickListener {
-                val warningDialog = AlertDialog.Builder(activity)
-                warningDialog.setTitle(R.string.warning_title)
-                warningDialog.setMessage(R.string.warning_delete)
-                warningDialog.setNegativeButton(R.string.cancel_button) { _: DialogInterface?, _: Int -> }
-                warningDialog.setPositiveButton(R.string.confirm_button) { _: DialogInterface?, _: Int ->
-                    activity.dbHandler.deleteMovieItem(movieItem.id)
-                    activity.refreshList()
-                }
-                warningDialog.show()
-            }
-
-            // Move
-            viewHolder.move.setOnTouchListener { _, event ->
-                if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                    activity.touchHelper?.startDrag(viewHolder)
-                }
-                false
-            }
         }
     }
 

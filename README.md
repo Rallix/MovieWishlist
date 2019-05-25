@@ -11,7 +11,7 @@
     * [x] Jednoduchý test
     * [x] Přidat zvolením nalezeného filmu, popř. kliknutím nahoře, když se nic nenajde
     * [x] ```movie``` v API
-    * [ ] Zavřít AlertDialog po přidání
+    * [x] Zavřít AlertDialog po přidání filmu
 * [x] Odstranit splash screen
     * [x] Přeskočit ```MainActivity``` při zapnutí i cestě zpět
 * [x] Víc barev 
@@ -22,9 +22,10 @@
     * [x] Menší
     * [x] Zarovnané na střed
 * [ ] Refaktorovat vše do funkcí a menších tříd
-* [ ] Neobnobovat ItemAdapter při každém spuštění
+* [x] Neobnobovat ItemAdapter při každém spuštění
 * [ ] Vyřešit *Watch* a *Reset* pro kategorii
     * [ ] Smazat zhlédnuté
-    * [ ] Přeškrtnou, zašedit zhlédnuté a posunout na konec
+    * [x] Přeškrtnou, zašedit zhlédnuté
+    * [ ] Posunout je na konec
 * [ ] Ukládat pořadí drag & drop do databáze (rozestupy 10)
 * [x] Výchozí hodnoty v databázi při prvním spuštění aplikace

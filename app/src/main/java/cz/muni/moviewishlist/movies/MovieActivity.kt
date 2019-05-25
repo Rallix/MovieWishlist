@@ -109,8 +109,29 @@ class MovieActivity : AppCompatActivity() {
         val listAdapter = ArrayAdapter<String>(this, R.layout.lv_movie_result)
         searchResults.adapter = listAdapter
 
+
+        dialog.setView(dialogView)
+        dialog.setPositiveButton(R.string.add_button) { _: DialogInterface, _: Int ->
+            val name = search.query.toString().trim()
+            if (name.isNotEmpty()) {
+                val item = MovieItem()
+                item.movieId = categoryId
+                item.itemName = name
+                item.watched = false
+                dbHandler.addMovieItem(item)
+                refreshList()
+            } else {
+                // Empty movie name
+                Toast.makeText(this, getText(R.string.empty_text_error), Toast.LENGTH_SHORT).show()
+            }
+        }
+        dialog.setNegativeButton(R.string.cancel_button) { _: DialogInterface, _: Int -> }
+
+        val alert = dialog.create()
+        alert.show()
+
         var success = false
-        searchResults.setOnItemClickListener { parent, view, position, id ->
+        searchResults.setOnItemClickListener { _, _, position, _ ->
             if (success) {
                 val movieTitle = searchResults.getItemAtPosition(position).toString()
 
@@ -121,9 +142,9 @@ class MovieActivity : AppCompatActivity() {
                 dbHandler.addMovieItem(item)
                 refreshList()
                 // Close dialog
+                alert.dismiss()
             }
         }
-
 
         search.setOnQueryTextListener (object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(s: String?): Boolean {
@@ -162,24 +183,6 @@ class MovieActivity : AppCompatActivity() {
                 return true
             }
         })
-
-        dialog.setView(dialogView)
-        dialog.setPositiveButton(R.string.add_button) { _: DialogInterface, _: Int ->
-            val name = search.query.toString().trim()
-            if (name.isNotEmpty()) {
-                val item = MovieItem()
-                item.movieId = categoryId
-                item.itemName = name
-                item.watched = false
-                dbHandler.addMovieItem(item)
-                refreshList()
-            } else {
-                // Empty movie name
-                Toast.makeText(this, getText(R.string.empty_text_error), Toast.LENGTH_SHORT).show()
-            }
-        }
-        dialog.setNegativeButton(R.string.cancel_button) { _: DialogInterface, _: Int -> }
-        dialog.show()
     }
 
     /**

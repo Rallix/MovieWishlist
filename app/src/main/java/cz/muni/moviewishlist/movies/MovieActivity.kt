@@ -28,7 +28,7 @@ class MovieActivity : AppCompatActivity() {
     private var categoryId: Long = -1
 
     var touchHelper :ItemTouchHelper? = null
-    var adapter : ItemAdapter? = null
+    var adapter : MovieAdapter? = null
     var list : MutableList<MovieItem>? = null
 
     var displayList : MutableList<MovieItem>? = null
@@ -150,14 +150,8 @@ class MovieActivity : AppCompatActivity() {
                                 val title = movieObj.getString("Title")
                                 listAdapter.add(title)
                             }
-
-                            // TODO: listView setOnClickListener
                         }
                         listAdapter.notifyDataSetChanged()
-                        // TODO: Too many results
-                        //Toast.makeText(this@MovieActivity, "$response[\"success\"]", Toast.LENGTH_SHORT).show()
-                        // var movies = response[\"success"\]
-
                     },
                     Response.ErrorListener {
                         // Error message
@@ -184,7 +178,6 @@ class MovieActivity : AppCompatActivity() {
                 Toast.makeText(this, getText(R.string.empty_text_error), Toast.LENGTH_SHORT).show()
             }
         }
-
         dialog.setNegativeButton(R.string.cancel_button) { _: DialogInterface, _: Int -> }
         dialog.show()
     }
@@ -235,15 +228,19 @@ class MovieActivity : AppCompatActivity() {
             // Copy the entire list
             displayList = list?.toMutableList()
         }
-        adapter = ItemAdapter(this, displayList!!) // TODO: Don't recreate ItemAdapter
-        rv_item.adapter = adapter
+        if (rv_item.adapter == null) {
+            adapter = MovieAdapter(this, displayList!!) // TODO: Don't recreate
+            rv_item.adapter = adapter
+        } else {
+            adapter?.recreate(displayList!!)
+        }
     }
 
     /**
      * Binds data to [MovieItem]'s [RecyclerView].
      */
-    class ItemAdapter(private val activity: MovieActivity, private val list: MutableList<MovieItem>) :
-        RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
+    class MovieAdapter(private val activity: MovieActivity, private val list: MutableList<MovieItem>) :
+        RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
 
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val checkBox : CheckBox = view.findViewById(R.id.chbox_item)
@@ -251,6 +248,12 @@ class MovieActivity : AppCompatActivity() {
             val edit : ImageView = view.findViewById(R.id.iv_edit)
             val delete : ImageView = view.findViewById(R.id.iv_delete)
             val move : ImageView = view.findViewById(R.id.iv_move)
+        }
+
+        fun recreate(newList: MutableList<MovieItem>) {
+            this.list.clear()
+            this.list.addAll(newList)
+            notifyDataSetChanged()
         }
 
         override fun getItemCount(): Int = list.size

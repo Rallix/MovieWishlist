@@ -10,7 +10,8 @@
 * [x] Vyhledávat z IMDb
     * [x] Jednoduchý test
     * [x] Přidat zvolením nalezeného filmu, popř. kliknutím nahoře, když se nic nenajde
-    * [ ] ```movie``` v API
+    * [x] ```movie``` v API
+    * [ ] Zavřít AlertDialog po přidání
 * [x] Odstranit splash screen
     * [x] Přeskočit ```MainActivity``` při zapnutí i cestě zpět
 * [x] Víc barev 
@@ -22,7 +23,7 @@
     * [x] Zarovnané na střed
 * [ ] Refaktorovat vše do funkcí a menších tříd
 * [ ] Neobnobovat ItemAdapter při každém spuštění
-* [ ] *Watch* a *Reset* pro kategorii nedávají smysl (kdo shlédne vše naráz?) – vyměnit/smazat
+* [ ] Vyřešit *Watch* a *Reset* pro kategorii
     * [ ] Smazat zhlédnuté
     * [ ] Přeškrtnou, zašedit zhlédnuté a posunout na konec
 * [ ] Ukládat pořadí drag & drop do databáze (rozestupy 10)

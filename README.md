@@ -29,5 +29,5 @@ Aplikace pro ukládání seznamu filmů k pozdějšímu zhlédnutí.
     * [ ] Smazat zhlédnuté
     * [x] Přeškrtnou, zašedit zhlédnuté
     * [ ] Posunout je na konec
-* [ ] Ukládat pořadí drag & drop do databáze (rozestupy 10)
+* [x] Ukládat pořadí drag & drop do databáze
 * [x] Výchozí hodnoty v databázi při prvním spuštění aplikace

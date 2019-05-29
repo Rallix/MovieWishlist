@@ -1,5 +1,5 @@
 package cz.muni.moviewishlist.movies
-
+// data class
 class MovieItem {
     var id :Long = -1
     var categoryId:Long = -1

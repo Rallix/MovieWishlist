@@ -13,8 +13,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Proc teda vubec existuje tahle aktivita, kdyz vubec nic nedela a pouze nastartuje dalsi aktivitu? Neni potreba.
         startActivity(Intent(this, CategoryActivity::class.java))
     }
+    // Je zbytecne mit tady zakomentovany kod. V pripade potreby ho mas v historii na gitu
 /*
     override fun onStop() {
         super.onStop()

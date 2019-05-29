@@ -12,6 +12,10 @@
         android:theme = "@style/ThemeOverlay.AppCompat.Light"
         android:background="@color/colorPrimary" />
 
+    <!-- prefixy jsou zbytecne a nekdy muzou i skodit, napriklad pokud si budes linear layouty pojmenovavat
+         s prefixem ll (llFoo, llBar atd.), muze se ti stat, ze budes casem potrebovat layout zmenit na relative
+         a vsechny vyskyty budes muset prejmenovavat, aby to nematlo
+         -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_dashboard"
         android:layout_below="@id/dashboard_toolbar"

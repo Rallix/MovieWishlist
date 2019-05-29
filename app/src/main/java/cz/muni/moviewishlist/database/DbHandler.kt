@@ -69,6 +69,7 @@ class DbHandler(private val context: Context) : SQLiteOpenHelper(
         */
     }
 
+    // Co pouzit stejnou metodu pro add i pro update? https://stackoverflow.com/questions/13311727/android-sqlite-insert-or-update
     /**
      * Adds a [Category] entry to the database.
      */

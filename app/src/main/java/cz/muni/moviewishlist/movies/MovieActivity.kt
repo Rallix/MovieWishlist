@@ -1,22 +1,29 @@
 package cz.muni.moviewishlist.movies
 
 import android.content.DialogInterface
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.helper.ItemTouchHelper
-import android.view.*
-import android.widget.*
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.ListView
+import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import cz.muni.moviewishlist.R
 import cz.muni.moviewishlist.database.DbHandler
-import cz.muni.moviewishlist.main.*
+import cz.muni.moviewishlist.main.INTENT_CATEGORY_ID
+import cz.muni.moviewishlist.main.INTENT_CATEGORY_NAME
+import cz.muni.moviewishlist.main.OMDB_API
+import cz.muni.moviewishlist.main.OMDB_DISPLAY_LIMIT
 import kotlinx.android.synthetic.main.activity_movie.*
 import java.util.*
 
@@ -170,6 +177,13 @@ class MovieActivity : AppCompatActivity() {
                     Response.Listener { response ->
                         if (!response.getBoolean("Response")) {
                             // Too many results or No result
+                            // LEAK! Kdyz otocim displej nebo odejdu z aktivity, view by melo umrit, ale Volley
+                            // request si tady bude cely obrovsky Context aktivity bude drzet, dokud sam neskonci,
+                            // protoze si drzi listAdapter
+                            // Resi se pomoci WeakReference
+                            // Stejny problem nastava u vsech asynchronnich volani z tridy extendujici Context,
+                            // v jejichz vysledku se nejak pristupuje k view, takze predpokladam, ze to budes mit
+                            // na vice mistech
                             listAdapter.add(response.getString("Error"))
                         } else {
                             success = true

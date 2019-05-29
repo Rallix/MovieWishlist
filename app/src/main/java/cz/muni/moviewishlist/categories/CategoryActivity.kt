@@ -1,9 +1,9 @@
 package cz.muni.moviewishlist.categories
 
 import android.content.DialogInterface
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.EditText
@@ -12,7 +12,8 @@ import cz.muni.moviewishlist.R
 import cz.muni.moviewishlist.database.DbHandler
 import kotlinx.android.synthetic.main.activity_category.*
 
-/* Minimal requirements:
+/* Minimal requirements: nevidim zadne minimal requirements
+- tohle neni misto pro popis aplikace -> Readme
 
 Aplikace pro vedení záznamů o filmech, které uživatel plánuje v budoucnu shlédnout.
 Záznamy se ukládají do databáze a při zobrazení je lze řadit dle různých kritérií.
@@ -42,12 +43,15 @@ class CategoryActivity : AppCompatActivity() {
         super.onResume()
     }
 
+    // pro oba dialogy by sis mohl udelat spolecnou metodu pro vytvoreni dialogu a jenom ji predavat nektere
+    // informace v argumentech (title, message, button text, listener ...), abys neduplikoval kod
     /**
      * Creates a dialog for adding a new [Category] entry and refreshes the list.
      */
-    private fun addItemDialog() {
+    private fun addItemDialog() {       // Co treba addCategoryDialog()?
         val dialog = AlertDialog.Builder(this)
         dialog.setTitle(R.string.menu_add_title)
+        // Po zobrazeni je EditText az k okrajum dialogu, chtelo by to padding
         val view = layoutInflater.inflate(R.layout.dialog_category, null)
         val categoryName = view.findViewById<EditText>(R.id.et_category)
 
@@ -64,6 +68,7 @@ class CategoryActivity : AppCompatActivity() {
                 Toast.makeText(this, getText(R.string.empty_text_error), Toast.LENGTH_SHORT).show()
             }
         }
+        // Kdybys pridal jako druhy argument null, neudela to to same?
         dialog.setNegativeButton(getString(R.string.cancel_button)) { _: DialogInterface, _: Int ->
         }
         dialog.show()
@@ -104,6 +109,7 @@ class CategoryActivity : AppCompatActivity() {
             adapter = CategoryAdapter(this, dbHandler.getCategories())
             rv_dashboard.adapter = adapter
         } else {
+            // Cteni z DB na hlavnim vlakne? :-O
             adapter?.recreate(dbHandler.getCategories())
         }
     }

@@ -1,0 +1,7 @@
+- Nemuzu napsat ěšč do edittextu pro vyhledani filmu
+- Porad mas pravy a levy padding pro itemy hrozne malinky, checkbox a tlacitka jsou nalepene na okrajich
+- Vyhledavani z IMDB nefunguje - jak bych mel neco vyhledat? Spustil jsem cistou aplikaci na emulatoru Pixel 2 API 27,
+vlezl jsem do kategorie Movies, kliknul jsem na FAB pro pridani filmu a napsal jsem "Snow white" nebo "Source code".
+Zadne vysledky vyhledavani nevidim.
+- Pri otoceni zarizeni zmizi vsechny zobrazene dialogy!
+- Pri otoceni zarizeni se mi odstrani text, ktery jsem zadal do vyhledavaciho filtru!

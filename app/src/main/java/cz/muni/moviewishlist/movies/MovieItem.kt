@@ -1,12 +1,11 @@
 package cz.muni.moviewishlist.movies
-// data class
-class MovieItem {
-    var id :Long = -1
-    var categoryId:Long = -1
-    var itemName = ""
-    var watched = false
+
+data class MovieItem(var categoryId:Long,
+                     var itemName:String,
+                     var watched:Boolean = false) {
+
+    var id:Long = -1
     var order:Long = -1
 
     override fun toString(): String = itemName
-
 }

@@ -6,7 +6,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/empty_text_item_hint"
-        android:inputType="text"
+        android:inputType="text|textAutoComplete|textAutoCorrect|textCapWords"
+        android:imeOptions="actionSearch"
         android:padding="16dp"
         android:importantForAutofill="no" />
 </RelativeLayout>

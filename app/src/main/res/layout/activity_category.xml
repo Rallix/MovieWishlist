@@ -6,24 +6,20 @@
     tools:context=".categories.CategoryActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/dashboard_toolbar"
+        android:id="@+id/categories_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:actionBarSize"
         android:theme = "@style/ThemeOverlay.AppCompat.Light"
         android:background="@color/colorPrimary" />
 
-    <!-- prefixy jsou zbytecne a nekdy muzou i skodit, napriklad pokud si budes linear layouty pojmenovavat
-         s prefixem ll (llFoo, llBar atd.), muze se ti stat, ze budes casem potrebovat layout zmenit na relative
-         a vsechny vyskyty budes muset prejmenovavat, aby to nematlo
-         -->
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_dashboard"
-        android:layout_below="@id/dashboard_toolbar"
+        android:id="@+id/categories_view"
+        android:layout_below="@id/categories_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_dashboard"
+        android:id="@+id/categories_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 

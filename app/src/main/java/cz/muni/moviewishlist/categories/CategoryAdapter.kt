@@ -21,8 +21,8 @@ import cz.muni.moviewishlist.movies.MovieActivity
 class CategoryAdapter(private val activity: CategoryActivity, private val list: MutableList<Category>) :
     RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val categoryName: TextView = view.findViewById(R.id.tv_category_name)
-        val menu: ImageView = view.findViewById(R.id.iv_category_menu)
+        val categoryName: TextView = view.findViewById(R.id.category_name_text)
+        val menu: ImageView = view.findViewById(R.id.category_menu_icon)
     }
 
     fun recreate(newList: MutableList<Category>) {
@@ -36,7 +36,7 @@ class CategoryAdapter(private val activity: CategoryActivity, private val list: 
         return ViewHolder(
             LayoutInflater.from(
                 activity
-            ).inflate(R.layout.rv_category, viewGroup, false)
+            ).inflate(R.layout.category_view, viewGroup, false)
         )
     }
 

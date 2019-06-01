@@ -31,3 +31,24 @@ Aplikace pro ukládání seznamu filmů k pozdějšímu zhlédnutí.
     * [ ] Posunout je na konec
 * [x] Ukládat pořadí drag & drop do databáze
 * [x] Výchozí hodnoty v databázi při prvním spuštění aplikace
+
+## Check
+
+* [ ] *Nemuzu napsat ěšč do edittextu pro vyhledani filmu*
+  * V emulátoru mi to taky nejde, ale v mobilu na živo už ano
+* [ ] *Vyhledavani z IMDB*
+* [ ] *Pri otoceni zarizeni zmizi vsechny zobrazene dialogy!*
+* [ ] *Pri otoceni zarizeni se mi odstrani text, ktery jsem zadal do vyhledavaciho filtru!*
+* [x] *Spolecna metoda pro dialogy*
+* [ ] *Add or update jednou metodou*
+* *Padding*
+  * [x] Pravý a levý pro checkbox a tlačítka
+  * [x] Vystředit checkbox a tlačítka
+* *Smazat nepoužité třídy*
+  * [x] ```MainActivity```
+  * [x] ```IMDb```
+* ```data class```
+  * [x] ```Category```
+  * [x] ```MovieItem```
+* [x] *Smazat prefixy layoutů*
+* [x] *Zjednodušený* ```setNegativeButton```

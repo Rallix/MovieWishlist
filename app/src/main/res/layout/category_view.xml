@@ -4,14 +4,14 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/tv_category_name"
+        android:id="@+id/category_name_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toStartOf="@id/iv_category_menu"
+        android:layout_toStartOf="@id/category_menu_icon"
         android:padding="16dp"/>
 
     <ImageView
-        android:id="@+id/iv_category_menu"
+        android:id="@+id/category_menu_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentEnd="true"

@@ -21,11 +21,11 @@ class MovieAdapter(private val activity: MovieActivity, private val list: Mutabl
     RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val checkBox : CheckBox = view.findViewById(R.id.chbox_item)
-        val movieName : TextView = view.findViewById(R.id.tv_movie_name)
-        val edit : ImageView = view.findViewById(R.id.iv_edit)
-        val delete : ImageView = view.findViewById(R.id.iv_delete)
-        val move : ImageView = view.findViewById(R.id.iv_move)
+        val checkBox : CheckBox = view.findViewById(R.id.movie_checkbox)
+        val movieName : TextView = view.findViewById(R.id.movie_name_text)
+        val edit : ImageView = view.findViewById(R.id.movie_icon_edit)
+        val delete : ImageView = view.findViewById(R.id.movie_icon_delete)
+        val move : ImageView = view.findViewById(R.id.movie_icon_move)
     }
 
     fun recreate(newList: MutableList<MovieItem>) {
@@ -38,7 +38,7 @@ class MovieAdapter(private val activity: MovieActivity, private val list: Mutabl
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(activity).inflate(
-                R.layout.rv_movie,
+                R.layout.movie_view,
                 viewGroup,
                 false
             )
@@ -93,7 +93,7 @@ class MovieAdapter(private val activity: MovieActivity, private val list: Mutabl
 
         // Edit
         viewHolder.edit.setOnClickListener {
-            activity.updateItemDialog(movieItem)
+            activity.updateMovieDialog(movieItem)
         }
 
         // Delete

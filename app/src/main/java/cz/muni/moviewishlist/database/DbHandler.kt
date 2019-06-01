@@ -42,31 +42,7 @@ class DbHandler(private val context: Context) : SQLiteOpenHelper(
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-
         // TODO: Migrations
-        /*
-        // Migration 1: order of movie items
-        if (oldVersion < 2) {
-            db?.execSQL("ALTER TABLE $TABLE_MOVIE_ITEM ADD COLUMN $COL_MOVIE_ITEM_ORDER integer DEFAULT 0")
-
-            var currentOrder = 0
-            val queryResult = db?.rawQuery("SELECT * FROM $TABLE_MOVIE_ITEM", null)
-            if (queryResult?.moveToFirst() == true) {
-                queryResult.use {
-                    var hasItem = queryResult.moveToFirst()
-                    while(hasItem) {
-                        val id = queryResult.getInt(queryResult.getColumnIndex(COL_MOVIE_ITEM_CATEGORY_ID))
-                        val values = ContentValues()
-                        currentOrder += 20
-                        values.put(COL_MOVIE_ITEM_ORDER, currentOrder)
-                        db.update(TABLE_MOVIE_ITEM, values, "$COL_ID = ?", arrayOf(id.toString()))
-                        hasItem = queryResult.moveToNext()
-                    }
-                    queryResult.close()
-                }
-            }
-        }
-        */
     }
 
     // Co pouzit stejnou metodu pro add i pro update? https://stackoverflow.com/questions/13311727/android-sqlite-insert-or-update
@@ -113,9 +89,11 @@ class DbHandler(private val context: Context) : SQLiteOpenHelper(
             if (queryResult.moveToFirst()) {
                 queryResult.use {
                     do {
-                        val category = Category()
-                        category.id = queryResult.getLong(queryResult.getColumnIndex(COL_ID))
-                        category.name = queryResult.getString(queryResult.getColumnIndex(COL_CATEGORY_NAME))
+                        val id = queryResult.getLong(queryResult.getColumnIndex(COL_ID))
+                        val name = queryResult.getString(queryResult.getColumnIndex(COL_CATEGORY_NAME))
+
+                        val category = Category(name)
+                        category.id = id
                         result.add(category)
                     } while (queryResult.moveToNext())
                 }
@@ -135,13 +113,15 @@ class DbHandler(private val context: Context) : SQLiteOpenHelper(
             if (queryResult.moveToFirst()) {
                 queryResult.use {
                     do {
-                        val item = MovieItem()
-                        item.categoryId = categoryId
-                        item.id = queryResult.getLong(queryResult.getColumnIndex(COL_ID))
-                        item.itemName = queryResult.getString(queryResult.getColumnIndex(COL_MOVIE_ITEM_NAME))
-                        item.watched = queryResult.getInt(queryResult.getColumnIndex(COL_MOVIE_ITEM_WATCHED)) == 1 // boolean
-                        item.order = queryResult.getLong(queryResult.getColumnIndex(COL_MOVIE_ITEM_ORDER))
-                        result.add(item)
+                        val id = queryResult.getLong(queryResult.getColumnIndex(COL_ID))
+                        val name = queryResult.getString(queryResult.getColumnIndex(COL_MOVIE_ITEM_NAME))
+                        val watched = queryResult.getInt(queryResult.getColumnIndex(COL_MOVIE_ITEM_WATCHED)) == 1 // boolean
+                        val order = queryResult.getLong(queryResult.getColumnIndex(COL_MOVIE_ITEM_ORDER))
+
+                        val movie = MovieItem(categoryId, name, watched)
+                        movie.id = id
+                        movie.order = order
+                        result.add(movie)
                     } while (queryResult.moveToNext())
                 }
             }
@@ -174,9 +154,7 @@ class DbHandler(private val context: Context) : SQLiteOpenHelper(
 
         db.update(TABLE_MOVIE_ITEM, cv, "$COL_ID = ?", arrayOf(item.id.toString()))
     }
-
-
-
+    
     fun deleteCategory(categoryId: Long) {
         val db = writableDatabase
         // Delete with all its children
@@ -198,12 +176,12 @@ class DbHandler(private val context: Context) : SQLiteOpenHelper(
         if (queryResult.moveToFirst()) {
             queryResult.use {
                 do {
-                    val item = MovieItem()
-                    item.categoryId = categoryId
-                    item.id = queryResult.getLong(queryResult.getColumnIndex(COL_ID))
-                    item.itemName = queryResult.getString(queryResult.getColumnIndex(COL_MOVIE_ITEM_NAME))
-                    item.watched = watched
-                    updateMovieItem(item)
+                    val id = queryResult.getLong(queryResult.getColumnIndex(COL_ID))
+                    val name = queryResult.getString(queryResult.getColumnIndex(COL_MOVIE_ITEM_NAME))
+
+                    val movie = MovieItem(categoryId, name, watched)
+                    movie.id = id
+                    updateMovieItem(movie)
                 } while (queryResult.moveToNext())
             }
         }

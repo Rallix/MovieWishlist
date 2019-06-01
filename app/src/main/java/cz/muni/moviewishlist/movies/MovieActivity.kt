@@ -20,10 +20,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import cz.muni.moviewishlist.R
 import cz.muni.moviewishlist.database.DbHandler
-import cz.muni.moviewishlist.main.INTENT_CATEGORY_ID
-import cz.muni.moviewishlist.main.INTENT_CATEGORY_NAME
-import cz.muni.moviewishlist.main.OMDB_API
-import cz.muni.moviewishlist.main.OMDB_DISPLAY_LIMIT
+import cz.muni.moviewishlist.main.*
 import kotlinx.android.synthetic.main.activity_movie.*
 import java.util.*
 
@@ -36,13 +33,13 @@ class MovieActivity : AppCompatActivity() {
     var adapter : MovieAdapter? = null
     var list : MutableList<MovieItem>? = null
 
-    var displayList : MutableList<MovieItem>? = null
+    private var displayList : MutableList<MovieItem>? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie)
-        setSupportActionBar(item_toolbar)
+        setSupportActionBar(movie_toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
@@ -50,10 +47,10 @@ class MovieActivity : AppCompatActivity() {
         categoryId = intent.getLongExtra(INTENT_CATEGORY_ID, -1)
 
         dbHandler = DbHandler(this)
-        rv_item.layoutManager = LinearLayoutManager(this)
+        movie_view.layoutManager = LinearLayoutManager(this)
 
         // Create new movie with plus button
-        fab_item.setOnClickListener {
+        movie_fab.setOnClickListener {
             addItemDialog()
         }
 
@@ -84,7 +81,7 @@ class MovieActivity : AppCompatActivity() {
                 // Never called because swipeDirs = 0
             }
         })
-        touchHelper?.attachToRecyclerView(rv_item)
+        touchHelper?.attachToRecyclerView(movie_view)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -122,17 +119,14 @@ class MovieActivity : AppCompatActivity() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_search_movie, null)
         val search = dialogView.findViewById<SearchView>(R.id.sv_search_movieItem)
         val searchResults = dialogView.findViewById<ListView>(R.id.lv_search_movieItem)
-        val listAdapter = ArrayAdapter<String>(this, R.layout.lv_movie_result)
+        val listAdapter = ArrayAdapter<String>(this, R.layout.movie_results_view)
         searchResults.adapter = listAdapter
 
         dialog.setView(dialogView)
         dialog.setPositiveButton(R.string.add_button) { _: DialogInterface, _: Int ->
             val name = search.query.toString().trim()
             if (name.isNotEmpty()) {
-                val item = MovieItem()
-                item.categoryId = categoryId
-                item.itemName = name
-                item.watched = false
+                val item = MovieItem(categoryId, name, false)
                 dbHandler.addMovieItem(item)
                 refreshList()
             } else {
@@ -140,7 +134,7 @@ class MovieActivity : AppCompatActivity() {
                 Toast.makeText(this, getText(R.string.empty_text_error), Toast.LENGTH_SHORT).show()
             }
         }
-        dialog.setNegativeButton(R.string.cancel_button) { _: DialogInterface, _: Int -> }
+        dialog.setNegativeButton(R.string.cancel_button, null)
 
         val alert = dialog.create()
         alert.show()
@@ -150,10 +144,7 @@ class MovieActivity : AppCompatActivity() {
             if (success) {
                 val movieTitle = searchResults.getItemAtPosition(position).toString()
 
-                val item = MovieItem()
-                item.categoryId = categoryId
-                item.itemName = movieTitle
-                item.watched = false
+                val item = MovieItem(categoryId, movieTitle, false)
                 dbHandler.addMovieItem(item)
                 refreshList()
                 // Close dialog
@@ -177,6 +168,7 @@ class MovieActivity : AppCompatActivity() {
                     Response.Listener { response ->
                         if (!response.getBoolean("Response")) {
                             // Too many results or No result
+
                             // LEAK! Kdyz otocim displej nebo odejdu z aktivity, view by melo umrit, ale Volley
                             // request si tady bude cely obrovsky Context aktivity bude drzet, dokud sam neskonci,
                             // protoze si drzi listAdapter
@@ -210,14 +202,13 @@ class MovieActivity : AppCompatActivity() {
     /**
      * Creates a dialog for updating a [MovieItem] and refreshes the list afterwards
      */
-    internal fun updateItemDialog(movieItem: MovieItem) {
-        val dialog = AlertDialog.Builder(this)
-        dialog.setTitle(R.string.menu_edit_title)
+    internal fun updateMovieDialog(movieItem: MovieItem) {
         val view = layoutInflater.inflate(R.layout.dialog_movie, null)
         val movieName = view.findViewById<EditText>(R.id.et_movieItem)
-        movieName.setText(movieItem.itemName)
-        dialog.setView(view)
-        dialog.setPositiveButton(R.string.update_button) { _: DialogInterface, _: Int ->
+        Methods.createDialog(this, view, R.string.menu_edit_title, createdListener = {
+            movieName.setText(movieItem.itemName)
+            movieName.setSelection(movieItem.itemName.length) // cursor to the end
+        }) { _, _ ->
             val name = movieName.text.toString().trim()
             if (name.isNotEmpty()) {
                 movieItem.categoryId = categoryId
@@ -231,8 +222,6 @@ class MovieActivity : AppCompatActivity() {
                 Toast.makeText(this, getText(R.string.empty_text_error), Toast.LENGTH_SHORT).show()
             }
         }
-        dialog.setNegativeButton(R.string.cancel_button) { _: DialogInterface, _: Int -> }
-        dialog.show()
     }
 
     /**
@@ -253,9 +242,9 @@ class MovieActivity : AppCompatActivity() {
             // Copy the entire list
             displayList = list?.toMutableList()
         }
-        if (adapter == null || rv_item.adapter == null) {
+        if (adapter == null || movie_view.adapter == null) {
             adapter = MovieAdapter(this, displayList!!) // TODO: Don't recreate
-            rv_item.adapter = adapter
+            movie_view.adapter = adapter
         } else {
             adapter?.recreate(displayList!!)
         }

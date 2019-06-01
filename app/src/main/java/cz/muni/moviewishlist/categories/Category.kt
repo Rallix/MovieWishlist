@@ -1,13 +1,7 @@
 package cz.muni.moviewishlist.categories
 
-import cz.muni.moviewishlist.movies.MovieItem
-
-class Category {
-    var id : Long = -1
-    var name = ""
-    // var createdAt = ""
-
-    var items : MutableList<MovieItem> = ArrayList()
+data class Category(var name:String) {
+    var id:Long = -1
 
     override fun toString(): String = name
 }

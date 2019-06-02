@@ -50,7 +50,7 @@ class MovieAdapter(private val activity: MovieActivity, private val list: Mutabl
         val movieItem = list[position]
 
         viewHolder.movieName.text = movieItem.toString()
-        viewHolder.checkBox.isChecked = movieItem.watched
+        // viewHolder.checkBox.isChecked = movieItem.watched
 
         // Apply colour + strikethrough
         fun applyWatched() {
@@ -59,6 +59,7 @@ class MovieAdapter(private val activity: MovieActivity, private val list: Mutabl
                 else activity.getColor(R.color.primary_text_disabled_material_light)
             )
             viewHolder.movieName.setStrikeThrough(movieItem.watched)
+            viewHolder.checkBox.isChecked = movieItem.watched
         }
 
         applyWatched()

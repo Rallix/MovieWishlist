@@ -10,8 +10,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".movies.MovieActivity"/>
-        <activity android:name=".categories.CategoryActivity">
+        <activity android:name=".movies.MovieActivity"
+            android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".categories.CategoryActivity"
+            android:configChanges="orientation|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />

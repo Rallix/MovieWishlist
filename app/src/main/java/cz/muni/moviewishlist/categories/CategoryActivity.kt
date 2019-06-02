@@ -16,6 +16,8 @@ class CategoryActivity : AppCompatActivity() {
     lateinit var dbHandler: DbHandler
     var adapter : CategoryAdapter? = null
 
+    var editTextText:String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category)
@@ -40,7 +42,9 @@ class CategoryActivity : AppCompatActivity() {
      */
     private fun addCategoryDialog() {
         val view = layoutInflater.inflate(R.layout.dialog_category, null)
-        Methods.createDialog(this, view, R.string.menu_add_title, createdListener = {}) { _, _ ->
+        Methods.createDialog(this, view, R.string.menu_add_title, negativeListener = {_,_->
+
+        }) { _, _ ->
             val categoryName = view.findViewById<EditText>(R.id.et_category)
             val name = categoryName.text.toString().trim()
             if (name.isNotEmpty()) {
@@ -60,7 +64,7 @@ class CategoryActivity : AppCompatActivity() {
         val view = layoutInflater.inflate(R.layout.dialog_category, null)
         val categoryName = view.findViewById<EditText>(R.id.et_category)
 
-        Methods.createDialog(this, view, R.string.menu_edit_title, createdListener = {
+        Methods.createDialog(this, view, R.string.menu_edit_title, R.string.update_button, createdListener = {
             categoryName.setText(category.name)
             categoryName.setSelection(category.name.length) // cursor to the end
         }) { _, _ ->

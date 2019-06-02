@@ -34,13 +34,13 @@ Aplikace pro ukládání seznamu filmů k pozdějšímu zhlédnutí.
 
 ## Check
 
-* [ ] *Nemuzu napsat ěšč do edittextu pro vyhledani filmu*
-  * V emulátoru mi to taky nejde, ale v mobilu na živo už ano
-* [ ] *Vyhledavani z IMDB*
-* [ ] *Pri otoceni zarizeni zmizi vsechny zobrazene dialogy!*
-* [ ] *Pri otoceni zarizeni se mi odstrani text, ktery jsem zadal do vyhledavaciho filtru!*
+* [x] *Nemuzu napsat ěšč do edittextu pro vyhledani filmu*
+  * V emulátoru mi to taky nejde (nevím proč), ale v mobilu na živo už ano
+* [x] *Vyhledavani z IMDB už během psaní*
+* [x] *Pri otoceni zarizeni zmizi vsechny zobrazene dialogy!*
+* [x] *Pri otoceni zarizeni se mi odstrani text, ktery jsem zadal do vyhledavaciho filtru!*
 * [x] *Spolecna metoda pro dialogy*
-* [ ] *Add or update jednou metodou*
+* [x] *Add or update jednou metodou*
 * *Padding*
   * [x] Pravý a levý pro checkbox a tlačítka
   * [x] Vystředit checkbox a tlačítka

@@ -1,6 +1,7 @@
 package cz.muni.moviewishlist.movies
 
 import android.content.DialogInterface
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -14,9 +15,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.Toast
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
 import cz.muni.moviewishlist.R
 import cz.muni.moviewishlist.database.DbHandler
@@ -27,6 +26,8 @@ import java.util.*
 class MovieActivity : AppCompatActivity() {
 
     lateinit var dbHandler: DbHandler
+    lateinit var requestQueue : RequestQueue
+
     private var categoryId: Long = -1
 
     var touchHelper :ItemTouchHelper? = null
@@ -34,7 +35,6 @@ class MovieActivity : AppCompatActivity() {
     var list : MutableList<MovieItem>? = null
 
     private var displayList : MutableList<MovieItem>? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +47,7 @@ class MovieActivity : AppCompatActivity() {
         categoryId = intent.getLongExtra(INTENT_CATEGORY_ID, -1)
 
         dbHandler = DbHandler(this)
+        requestQueue = Volley.newRequestQueue(this)
         movie_view.layoutManager = LinearLayoutManager(this)
 
         // Create new movie with plus button
@@ -74,7 +75,6 @@ class MovieActivity : AppCompatActivity() {
                     movie.order = index.toLong() + 1
                     dbHandler.addOrUpdateMovieItem(movie)
                 }
-                // TODO: notifyDatasetChanged here changes the order back
             }
 
             override fun onSwiped(p0: RecyclerView.ViewHolder, p1: Int) {
@@ -134,7 +134,10 @@ class MovieActivity : AppCompatActivity() {
                 Toast.makeText(this, getText(R.string.empty_text_error), Toast.LENGTH_SHORT).show()
             }
         }
-        dialog.setNegativeButton(R.string.cancel_button, null)
+        dialog.setNegativeButton(R.string.cancel_button) { _, _ ->
+            // Cancel all pending requests when cancelled
+            requestQueue.cancelAll(this@MovieActivity)
+        }
 
         val alert = dialog.create()
         alert.show()
@@ -152,51 +155,36 @@ class MovieActivity : AppCompatActivity() {
             }
         }
 
-        search.setOnQueryTextListener (object : SearchView.OnQueryTextListener {
-            override fun onQueryTextChange(s: String?): Boolean {
-                listAdapter.clear()
-                listAdapter.notifyDataSetChanged()
+        search.setOnQueryTextListener(object: MovieSearchListener(this@MovieActivity, listAdapter,
+            failListener = { success = false },
+            successListener = { success = true }) {
+            override fun clearView() {
+                super.clearView()
                 success = false
+            }
+
+            override fun onQueryTextChange(search: String?): Boolean {
+                clearView()
+                if (super.onQueryTextChange(search)) return true // null or empty
+                requestQueue.add(createRequest(search!!))
                 return true
             }
-            override fun onQueryTextSubmit(s: String?): Boolean {
-                listAdapter.clear()
-                val url = "$OMDB_API&type=movie&s=${s.toString()}"
 
-                val queue = Volley.newRequestQueue(this@MovieActivity)
-                val req = JsonObjectRequest(Request.Method.GET, url, null,
-                    Response.Listener { response ->
-                        if (!response.getBoolean("Response")) {
-                            // Too many results or No result
-
-                            // LEAK! Kdyz otocim displej nebo odejdu z aktivity, view by melo umrit, ale Volley
-                            // request si tady bude cely obrovsky Context aktivity bude drzet, dokud sam neskonci,
-                            // protoze si drzi listAdapter
-                            // Resi se pomoci WeakReference
-                            // Stejny problem nastava u vsech asynchronnich volani z tridy extendujici Context,
-                            // v jejichz vysledku se nejak pristupuje k view, takze predpokladam, ze to budes mit
-                            // na vice mistech
-                            listAdapter.add(response.getString("Error"))
-                        } else {
-                            success = true
-                            val moviesArray = response.getJSONArray("Search")
-                            for (i in 0 until minOf(moviesArray.length(), OMDB_DISPLAY_LIMIT)) {
-                                val movieObj = moviesArray.getJSONObject(i)
-                                val title = movieObj.getString("Title")
-                                listAdapter.add(title)
-                            }
-                        }
-                        listAdapter.notifyDataSetChanged()
-                    },
-                    Response.ErrorListener {
-                        // Error message
-                        listAdapter.add(getString(R.string.connection_error))
-                        listAdapter.notifyDataSetChanged()
-                    })
-                queue.add(req)
-                return true
+            override fun onQueryTextSubmit(search: String?): Boolean {
+                return onQueryTextChange(search)
             }
         })
+    }
+
+    override fun onStop() {
+        // Cancel all pending requests when the phone is rotated
+        requestQueue.cancelAll(this@MovieActivity)
+        super.onStop()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        requestQueue.cancelAll(this@MovieActivity)
+        super.onConfigurationChanged(newConfig)
     }
 
     /**
@@ -205,7 +193,8 @@ class MovieActivity : AppCompatActivity() {
     internal fun updateMovieDialog(movieItem: MovieItem) {
         val view = layoutInflater.inflate(R.layout.dialog_movie, null)
         val movieName = view.findViewById<EditText>(R.id.et_movieItem)
-        Methods.createDialog(this, view, R.string.menu_edit_title, createdListener = {
+        Methods.createDialog(this, view, R.string.menu_edit_title, R.string.update_button,
+            createdListener = {
             movieName.setText(movieItem.itemName)
             movieName.setSelection(movieItem.itemName.length) // cursor to the end
         }) { _, _ ->

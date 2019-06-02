@@ -44,6 +44,7 @@ Aplikace pro ukládání seznamu filmů k pozdějšímu zhlédnutí.
 * *Padding*
   * [x] Pravý a levý pro checkbox a tlačítka
   * [x] Vystředit checkbox a tlačítka
+  * [x] Category dialog EditText
 * *Smazat nepoužité třídy*
   * [x] ```MainActivity```
   * [x] ```IMDb```

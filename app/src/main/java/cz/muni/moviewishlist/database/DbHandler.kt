@@ -45,37 +45,48 @@ class DbHandler(private val context: Context) : SQLiteOpenHelper(
         // TODO: Migrations
     }
 
-    // Co pouzit stejnou metodu pro add i pro update? https://stackoverflow.com/questions/13311727/android-sqlite-insert-or-update
     /**
-     * Adds a [Category] entry to the database.
+     * Adds a [Category] entry to the database or updates an existing one.
      */
-    fun addCategory(category: Category): Boolean {
+    fun addOrUpdateCategory(category: Category) {
         val db = writableDatabase
         val cv = ContentValues()
 
         cv.put(COL_CATEGORY_NAME, category.name)
 
-        val result = db.insert(TABLE_CATEGORY, null, cv)
-        return result != (-1).toLong()
+        if (category.id != -1L) cv.put(COL_ID, category.id)
+        val id = db.insertWithOnConflict(TABLE_CATEGORY, null, cv, SQLiteDatabase.CONFLICT_IGNORE)
+        if (id == -1L) {
+            db.update(TABLE_CATEGORY, cv, "$COL_ID = ?", arrayOf(category.id.toString()))
+        }
     }
 
     /**
      * Adds a [MovieItem] entry to the database.
      */
-    fun addMovieItem(movie: MovieItem): Boolean {
+    fun addOrUpdateMovieItem(movie: MovieItem) {
         val db = writableDatabase
         val cv = ContentValues()
+
         cv.put(COL_MOVIE_ITEM_NAME, movie.itemName)
         cv.put(COL_MOVIE_ITEM_CATEGORY_ID, movie.categoryId)
-
         cv.put(COL_MOVIE_ITEM_WATCHED, movie.watched)
 
-        val totalCountInCategory = DatabaseUtils.queryNumEntries(db, TABLE_MOVIE_ITEM,
-            "$COL_MOVIE_ITEM_CATEGORY_ID = ?", arrayOf(movie.categoryId.toString()))
-        cv.put(COL_MOVIE_ITEM_ORDER, totalCountInCategory + 1)
+        if (movie.id != -1L) {
+            // Update
+            cv.put(COL_ID, movie.id)
+            cv.put(COL_MOVIE_ITEM_ORDER, movie.order)
+        } else {
+            // Add
+            val totalCountInCategory = DatabaseUtils.queryNumEntries(db, TABLE_MOVIE_ITEM,
+                "$COL_MOVIE_ITEM_CATEGORY_ID = ?", arrayOf(movie.categoryId.toString()))
+            cv.put(COL_MOVIE_ITEM_ORDER, totalCountInCategory + 1)
+        }
 
-        val result = db.insert(TABLE_MOVIE_ITEM, null, cv)
-        return result != (-1).toLong()
+        val id = db.insertWithOnConflict(TABLE_MOVIE_ITEM, null, cv, SQLiteDatabase.CONFLICT_IGNORE)
+        if (id == -1L) {
+            db.update(TABLE_MOVIE_ITEM, cv, "$COL_ID = ?", arrayOf(movie.id.toString()))
+        }
     }
 
     /**
@@ -130,30 +141,6 @@ class DbHandler(private val context: Context) : SQLiteOpenHelper(
         }
     }
 
-    /**
-     * Updates a [Category] entry in the database.
-     */
-    fun updateCategory(category: Category) {
-        val db = writableDatabase
-        val cv = ContentValues()
-
-        cv.put(COL_CATEGORY_NAME, category.name)
-        db.update(TABLE_CATEGORY, cv, "$COL_ID = ?", arrayOf(category.id.toString()))
-    }
-
-    /**
-     * Updates a [MovieItem] entry in the database.
-     */
-    fun updateMovieItem(item: MovieItem) {
-        val db = writableDatabase
-        val cv = ContentValues()
-        cv.put(COL_MOVIE_ITEM_NAME, item.itemName)
-        cv.put(COL_MOVIE_ITEM_CATEGORY_ID, item.categoryId)
-        cv.put(COL_MOVIE_ITEM_WATCHED, item.watched)
-        cv.put(COL_MOVIE_ITEM_ORDER, item.order)
-
-        db.update(TABLE_MOVIE_ITEM, cv, "$COL_ID = ?", arrayOf(item.id.toString()))
-    }
     
     fun deleteCategory(categoryId: Long) {
         val db = writableDatabase
@@ -181,7 +168,7 @@ class DbHandler(private val context: Context) : SQLiteOpenHelper(
 
                     val movie = MovieItem(categoryId, name, watched)
                     movie.id = id
-                    updateMovieItem(movie)
+                    addOrUpdateMovieItem(movie)
                 } while (queryResult.moveToNext())
             }
         }

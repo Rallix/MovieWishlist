@@ -45,7 +45,7 @@ class CategoryActivity : AppCompatActivity() {
             val name = categoryName.text.toString().trim()
             if (name.isNotEmpty()) {
                 val category = Category(name)
-                dbHandler.addCategory(category)
+                dbHandler.addOrUpdateCategory(category)
                 refreshList()
             } else {
                 Toast.makeText(this, getText(R.string.empty_text_error), Toast.LENGTH_SHORT).show()
@@ -67,7 +67,7 @@ class CategoryActivity : AppCompatActivity() {
             val name = categoryName.text.toString().trim()
             if (name.isNotEmpty()) {
                 category.name = name
-                dbHandler.updateCategory(category)
+                dbHandler.addOrUpdateCategory(category)
                 refreshList()
             } else {
                 // Empty movie name

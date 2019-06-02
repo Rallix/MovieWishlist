@@ -66,22 +66,8 @@ class MovieAdapter(private val activity: MovieActivity, private val list: Mutabl
         // Mark as watched / unwatched
         fun markWatched() {
             movieItem.watched = !movieItem.watched
-            activity.dbHandler.updateMovieItem(movieItem)
+            activity.dbHandler.addOrUpdateMovieItem(movieItem)
             applyWatched()
-
-            // Move the item (TODO: Wrong positions)
-            /*
-            if (!movieItem.watched) {
-                // → Start
-                list.add(0, movieItem)
-                list.removeAt(position)
-                notifyItemMoved(position, 0)
-            } else {
-                // → End
-                list.removeAt(position)
-                list.add(movieItem)
-                notifyItemMoved(position, list.size-1)
-            }*/
         }
 
         viewHolder.checkBox.setOnClickListener {

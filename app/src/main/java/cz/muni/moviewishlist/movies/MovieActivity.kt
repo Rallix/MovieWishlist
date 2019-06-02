@@ -72,7 +72,7 @@ class MovieActivity : AppCompatActivity() {
                 // Recalculate new order when Drag & Drop finishes
                 list?.forEachIndexed {index, movie ->
                     movie.order = index.toLong() + 1
-                    dbHandler.updateMovieItem(movie)
+                    dbHandler.addOrUpdateMovieItem(movie)
                 }
                 // TODO: notifyDatasetChanged here changes the order back
             }
@@ -127,7 +127,7 @@ class MovieActivity : AppCompatActivity() {
             val name = search.query.toString().trim()
             if (name.isNotEmpty()) {
                 val item = MovieItem(categoryId, name, false)
-                dbHandler.addMovieItem(item)
+                dbHandler.addOrUpdateMovieItem(item)
                 refreshList()
             } else {
                 // Empty movie name
@@ -145,7 +145,7 @@ class MovieActivity : AppCompatActivity() {
                 val movieTitle = searchResults.getItemAtPosition(position).toString()
 
                 val item = MovieItem(categoryId, movieTitle, false)
-                dbHandler.addMovieItem(item)
+                dbHandler.addOrUpdateMovieItem(item)
                 refreshList()
                 // Close dialog
                 alert.dismiss()
@@ -215,7 +215,7 @@ class MovieActivity : AppCompatActivity() {
                 movieItem.itemName = name
                 movieItem.watched = false
 
-                dbHandler.updateMovieItem(movieItem)
+                dbHandler.addOrUpdateMovieItem(movieItem)
                 refreshList()
             } else {
                 // Empty movie name
